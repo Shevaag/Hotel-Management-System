@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receptionist Dashboard | Ocean View Resort</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-icon">
+            <i class="fas fa-concierge-bell"></i>
+        </div>
+        <h1>Ocean View Resort</h1>
+    </header>
+
+    <!-- Main Content -->
+    <main class="card">
+
+        <div class="button-container">
+            <!-- Add New Reservation Button -->
+            <button class="action-btn" onclick="addReservation()">
+                    <span class="btn-icon">
+                        <i class="fas fa-calendar-plus"></i>
+                    </span>
+                <span class="btn-text">
+                        Add New Reservation
+                    </span>
+                <span class="btn-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </span>
+            </button>
+
+            <!-- View Booking Details Button -->
+            <button class="action-btn" onclick="viewBookings()">
+                    <span class="btn-icon">
+                        <i class="fas fa-list-alt"></i>
+                    </span>
+                <span class="btn-text">
+                        View Booking Details
+                    </span>
+                <span class="btn-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </span>
+            </button>
+
+            <!-- Calculate & Print Bill Button -->
+            <button class="action-btn" onclick="calculateBill()">
+                    <span class="btn-icon">
+                        <i class="fas fa-calculator"></i>
+                    </span>
+                <span class="btn-text">
+                        Calculate & Print Bill
+                    </span>
+                <span class="btn-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </span>
+            </button>
+
+            <!-- Help Button -->
+            <button class="action-btn" onclick="showHelp()">
+                    <span class="btn-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </span>
+                <span class="btn-text">
+                        Help
+                    </span>
+                <span class="btn-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </span>
+            </button>
+
+            <!-- Exit Button -->
+            <button class="action-btn logout-btn" onclick="logout()">
+                    <span class="btn-icon">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </span>
+                <span class="btn-text">
+                        Exit
+                    </span>
+                <span class="btn-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </span>
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2026 Ocean View Resort Reception System. All rights reserved.</p>
+        <small>Version 4.2.1</small>
+    </footer>
+</div>
+
+<!-- Notification Container -->
+<div id="notification"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

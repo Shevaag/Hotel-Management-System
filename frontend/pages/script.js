@@ -221,3 +221,107 @@ document.addEventListener('DOMContentLoaded', function() {
         mainContent.classList.add('fade-in');
     }
 });
+
+// receptionist dashboard
+
+// Dashboard JavaScript Functions
+
+// Button Functions
+function addReservation() {
+    showNotification('Add New Reservation feature will be available soon!', 'info');
+    // In the future, this will open the add reservation form
+}
+
+function viewBookings() {
+    showNotification('View Booking Details feature will be available soon!', 'info');
+    // In the future, this will show the bookings table
+}
+
+function calculateBill() {
+    showNotification('Calculate & Print Bill feature will be available soon!', 'info');
+    // In the future, this will open the bill calculator
+}
+
+function showHelp() {
+    const helpBox = document.getElementById('helpBox');
+    if (helpBox.style.display === 'none') {
+        helpBox.style.display = 'block';
+        showNotification('Help information displayed', 'success');
+    } else {
+        helpBox.style.display = 'none';
+    }
+}
+
+function logout() {
+    if (confirm('Are you sure you want to logout?')) {
+        showNotification('Logging out...', 'info');
+
+        // Simulate logout delay
+        setTimeout(() => {
+            showNotification('Logged out successfully!', 'success');
+
+            // In the future, redirect to login page
+            // window.location.href = 'receptionist-login.html';
+
+            setTimeout(() => {
+                alert('Logout complete. In the final version, this will redirect to login page.');
+            }, 1000);
+        }, 1500);
+    }
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    const notificationContainer = document.getElementById('notification');
+
+    // Clear existing notifications after a delay
+    const notifications = notificationContainer.querySelectorAll('.notification');
+    if (notifications.length >= 3) {
+        notifications[0].remove();
+    }
+
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+
+    let icon = 'fa-info-circle';
+    if (type === 'success') icon = 'fa-check-circle';
+    if (type === 'warning') icon = 'fa-exclamation-triangle';
+    if (type === 'error') icon = 'fa-times-circle';
+
+    notification.innerHTML = `
+        <i class="fas ${icon}"></i>
+        <span>${message}</span>
+    `;
+
+    notificationContainer.appendChild(notification);
+
+    // Auto remove after 4 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 300);
+        }
+    }, 4000);
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Show welcome notification
+    setTimeout(() => {
+        showNotification('Welcome!', 'success');
+    }, 1000);
+
+    // Set user info if available
+    try {
+        const userName = localStorage.getItem('userName');
+        if (userName) {
+            // Update page if needed
+        }
+    } catch (e) {
+        console.log('Local storage not available');
+    }
+});

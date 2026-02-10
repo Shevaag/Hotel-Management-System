@@ -482,3 +482,525 @@ body {
 .notification-content i {
     font-size: 20px;
 }
+
+/*receptionist dashboard */
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Container */
+.container {
+    width: 100%;
+    max-width: 500px;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header-icon {
+    font-size: 48px;
+    color: #3182ce;
+    margin-bottom: 15px;
+}
+
+.header h1 {
+    font-size: 32px;
+    color: #2d3748;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.header p {
+    font-size: 16px;
+    color: #718096;
+}
+
+/* Card */
+.card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.card h2 {
+    color: #2d3748;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #718096;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+/* Button Container */
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+/* Action Buttons */
+.action-btn {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: left;
+}
+
+.action-btn:hover {
+    border-color: #3182ce;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(49, 130, 206, 0.1);
+}
+
+.btn-icon {
+    width: 45px;
+    height: 45px;
+    background: #3182ce;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.btn-icon i {
+    font-size: 20px;
+    color: white;
+}
+
+.btn-text {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.btn-arrow i {
+    color: #cbd5e0;
+    font-size: 18px;
+    transition: all 0.3s;
+}
+
+.action-btn:hover .btn-arrow i {
+    color: #3182ce;
+    transform: translateX(3px);
+}
+
+/* Logout Button */
+.logout-btn:hover {
+    border-color: #e53e3e;
+    box-shadow: 0 5px 15px rgba(229, 62, 62, 0.1);
+}
+
+.logout-btn .btn-icon {
+    background: #e53e3e;
+}
+
+/* Help Box */
+.help-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.help-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.help-icon {
+    font-size: 24px;
+    color: #3182ce;
+}
+
+.help-text {
+    flex: 1;
+}
+
+.help-title {
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 5px;
+    font-size: 15px;
+}
+
+.help-details {
+    color: #718096;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    color: #718096;
+    font-size: 14px;
+}
+
+.footer p {
+    margin-bottom: 5px;
+}
+
+.footer small {
+    font-size: 12px;
+    color: #a0aec0;
+}
+
+/* Notification */
+#notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.notification {
+    background: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: slideIn 0.3s ease;
+    border-left: 4px solid;
+    min-width: 300px;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.notification i {
+    font-size: 20px;
+}
+
+.notification.success {
+    border-left-color: #38a169;
+}
+
+.notification.success i {
+    color: #38a169;
+}
+
+.notification.info {
+    border-left-color: #3182ce;
+}
+
+.notification.info i {
+    color: #3182ce;
+}
+
+.notification.warning {
+    border-left-color: #d69e2e;
+}
+
+.notification.warning i {
+    color: #d69e2e;
+}
+
+.notification.error {
+    border-left-color: #e53e3e;
+}
+
+.notification.error i {
+    color: #e53e3e;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        max-width: 100%;
+    }
+
+    .card {
+        padding: 25px;
+    }
+
+    .action-btn {
+        padding: 15px;
+    }
+
+    .btn-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .btn-icon i {
+        font-size: 18px;
+    }
+
+    .btn-text {
+        font-size: 15px;
+    }
+
+    .notification {
+        min-width: 250px;
+        left: 20px;
+        right: 20px;
+        margin: 0 auto;
+    }
+}
+
+/* manager dashboard extras*/
+
+/* Add these styles to your existing style.css file */
+
+/* Manager specific button colors */
+.action-btn:nth-child(4) .btn-icon { /* Manage Rooms */
+    background: #38a169; /* Green */
+}
+
+.action-btn:nth-child(5) .btn-icon { /* View Reports */
+    background: #805ad5; /* Purple */
+}
+
+.action-btn:nth-child(6) .btn-icon { /* Modify Reservations */
+    background: #d69e2e; /* Yellow */
+}
+
+/* Hover colors for manager buttons */
+.action-btn:nth-child(4):hover {
+    border-color: #38a169;
+    box-shadow: 0 5px 15px rgba(56, 161, 105, 0.1);
+}
+
+.action-btn:nth-child(5):hover {
+    border-color: #805ad5;
+    box-shadow: 0 5px 15px rgba(128, 90, 213, 0.1);
+}
+
+.action-btn:nth-child(6):hover {
+    border-color: #d69e2e;
+    box-shadow: 0 5px 15px rgba(214, 158, 46, 0.1);
+}
+
+// Manager Dashboard JavaScript Functions
+
+// Button Functions
+function addReservation() {
+    showNotification('Add New Reservation feature will be available soon!', 'info');
+    // In the future, this will open the add reservation form
+}
+
+function viewBookings() {
+    showNotification('View Booking Details feature will be available soon!', 'info');
+    // In the future, this will show the bookings table
+}
+
+function calculateBill() {
+    showNotification('Calculate & Print Bill feature will be available soon!', 'info');
+    // In the future, this will open the bill calculator
+}
+
+// Manager specific functions
+function manageRooms() {
+    showNotification('Manage Rooms feature will be available soon!', 'info');
+    // In the future, this will open room management
+}
+
+function viewReports() {
+    showNotification('View Reports feature will be available soon!', 'info');
+    // In the future, this will show reports dashboard
+}
+
+function modifyReservations() {
+    showNotification('Modify Reservations feature will be available soon!', 'info');
+    // In the future, this will open reservation editor
+}
+
+function showHelp() {
+    const helpBox = document.getElementById('helpBox');
+    if (helpBox.style.display === 'none') {
+        helpBox.style.display = 'block';
+        showNotification('Help information displayed', 'success');
+    } else {
+        helpBox.style.display = 'none';
+    }
+}
+
+function logout() {
+    if (confirm('Are you sure you want to logout from Manager Dashboard?')) {
+        showNotification('Logging out...', 'info');
+
+        // Simulate logout delay
+        setTimeout(() => {
+            showNotification('Logged out successfully!', 'success');
+
+            // In the future, redirect to login page
+            // window.location.href = 'manager-login.html';
+
+            setTimeout(() => {
+                alert('Manager logout complete. In the final version, this will redirect to login page.');
+            }, 1000);
+        }, 1500);
+    }
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    const notificationContainer = document.getElementById('notification');
+
+    // Clear existing notifications after a delay
+    const notifications = notificationContainer.querySelectorAll('.notification');
+    if (notifications.length >= 3) {
+        notifications[0].remove();
+    }
+
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+
+    let icon = 'fa-info-circle';
+    if (type === 'success') icon = 'fa-check-circle';
+    if (type === 'warning') icon = 'fa-exclamation-triangle';
+    if (type === 'error') icon = 'fa-times-circle';
+
+    notification.innerHTML = `
+        <i class="fas ${icon}"></i>
+        <span>${message}</span>
+    `;
+
+    notificationContainer.appendChild(notification);
+
+    // Auto remove after 4 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 300);
+        }
+    }, 4000);
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Show welcome notification
+    setTimeout(() => {
+        showNotification('Welcome to Manager Dashboard! Administrative access granted.', 'success');
+    }, 500);
+
+    // Set manager info if available
+    try {
+        const userName = localStorage.getItem('managerName');
+        if (userName) {
+            // Update page if needed
+        }
+    } catch (e) {
+        console.log('Local storage not available');
+    }
+});
+
+// Keyboard shortcuts for manager
+document.addEventListener('keydown', function(e) {
+    // Don't trigger if user is typing in an input field
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        return;
+    }
+
+    // Ctrl + 1: Add Reservation
+    if (e.ctrlKey && e.key === '1') {
+        e.preventDefault();
+        addReservation();
+    }
+
+    // Ctrl + 2: View Bookings
+    if (e.ctrlKey && e.key === '2') {
+        e.preventDefault();
+        viewBookings();
+    }
+
+    // Ctrl + 3: Calculate Bill
+    if (e.ctrlKey && e.key === '3') {
+        e.preventDefault();
+        calculateBill();
+    }
+
+    // Ctrl + 4: Manage Rooms
+    if (e.ctrlKey && e.key === '4') {
+        e.preventDefault();
+        manageRooms();
+    }
+
+    // Ctrl + 5: View Reports
+    if (e.ctrlKey && e.key === '5') {
+        e.preventDefault();
+        viewReports();
+    }
+
+    // Ctrl + 6: Modify Reservations
+    if (e.ctrlKey && e.key === '6') {
+        e.preventDefault();
+        modifyReservations();
+    }
+
+    // Ctrl + H: Help
+    if (e.ctrlKey && e.key.toLowerCase() === 'h') {
+        e.preventDefault();
+        showHelp();
+    }
+
+    // Ctrl + Q: Logout
+    if (e.ctrlKey && e.key.toLowerCase() === 'q') {
+        e.preventDefault();
+        logout();
+    }
+});
