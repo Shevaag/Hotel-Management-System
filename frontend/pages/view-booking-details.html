@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Bookings | Ocean View Resort</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-icon">
+            <i class="fas fa-hotel hotel-icon"></i>
+            <h1>Ocean View Resort</h1>
+        </div>
+        <p>Room Availability & Booking Details</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="card">
+        <div class="page-header">
+            <h2><i class="fas fa-door-open"></i> Room Status</h2>
+            <button class="btn back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+        </div>
+
+        <!-- Filter Options -->
+        <div class="filter-section">
+            <div class="filter-group">
+                <label><i class="fas fa-filter"></i> Filter by:</label>
+                <select id="roomTypeFilter" class="filter-select" onchange="filterRooms()">
+                    <option value="all">All Room Types</option>
+                    <option value="standard">Standard</option>
+                    <option value="deluxe">Deluxe</option>
+                    <option value="suite">Suite</option>
+                    <option value="family">Family Suite</option>
+                    <option value="presidential">Presidential</option>
+                </select>
+
+                <select id="statusFilter" class="filter-select" onchange="filterRooms()">
+                    <option value="all">All Status</option>
+                    <option value="available">Available</option>
+                    <option value="booked">Booked</option>
+                </select>
+
+                <input type="text" id="searchInput" placeholder="Search room number..." class="search-input" onkeyup="filterRooms()">
+            </div>
+        </div>
+
+        <!-- Room List -->
+        <div class="room-list" id="roomList">
+            <!-- Rooms will be loaded here -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2026 Ocean View Resort | Room Management</p>
+    </footer>
+</div>
+
+<!-- Notification Container -->
+<div id="notification"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

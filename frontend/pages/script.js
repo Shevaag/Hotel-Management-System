@@ -773,3 +773,295 @@ document.addEventListener('DOMContentLoaded', function() {
         showNotification('Fill in the reservation details', 'info');
     }, 500);
 });
+
+// View Bookings JavaScript - Simple Room Availability
+
+// Sample room data
+const roomsData = [
+    // Standard Rooms
+    { number: '101', type: 'standard', typeName: 'Standard Room'},
+    { number: '102', type: 'standard', typeName: 'Standard Room' },
+    { number: '103', type: 'standard', typeName: 'Standard Room' },
+    { number: '104', type: 'standard', typeName: 'Standard Room'},
+    { number: '105', type: 'standard', typeName: 'Standard Room'},
+
+    // Deluxe Rooms
+    { number: '201', type: 'deluxe', typeName: 'Deluxe Room' },
+    { number: '202', type: 'deluxe', typeName: 'Deluxe Room'},
+    { number: '203', type: 'deluxe', typeName: 'Deluxe Room'},
+    { number: '204', type: 'deluxe', typeName: 'Deluxe Room'},
+    { number: '205', type: 'deluxe', typeName: 'Deluxe Room' },
+
+    // Suites
+    { number: '301', type: 'suite', typeName: 'Executive Suite' },
+    { number: '302', type: 'suite', typeName: 'Executive Suite' },
+    { number: '303', type: 'suite', typeName: 'Executive Suite'},
+
+    // Family Suites
+    { number: '401', type: 'family', typeName: 'Family Suite'},
+    { number: '402', type: 'family', typeName: 'Family Suite'},
+    { number: '403', type: 'family', typeName: 'Family Suite'},
+
+    // Presidential Suites
+    { number: '501', type: 'presidential', typeName: 'Presidential Suite' },
+    { number: '502', type: 'presidential', typeName: 'Presidential Suite' }
+];
+
+// Sample booking data - some rooms are booked
+const bookingsData = [
+    {
+        roomNumber: '201',
+        guestName: 'John Smith',
+        guestPhone: '9876543210',
+        checkinDate: '2026-02-15',
+        checkoutDate: '2026-02-18',
+        adults: 2,
+        children: 0,
+        bookingId: 'RES001',
+        status: 'booked'
+    },
+    {
+        roomNumber: '202',
+        guestName: 'Emma Johnson',
+        guestPhone: '9876543211',
+        checkinDate: '2026-02-16',
+        checkoutDate: '2026-02-20',
+        adults: 1,
+        children: 0,
+        bookingId: 'RES002',
+        status: 'booked'
+    },
+    {
+        roomNumber: '301',
+        guestName: 'Michael Brown',
+        guestPhone: '9876543212',
+        checkinDate: '2026-02-14',
+        checkoutDate: '2026-02-17',
+        adults: 2,
+        children: 1,
+        bookingId: 'RES003',
+        status: 'booked'
+    },
+    {
+        roomNumber: '401',
+        guestName: 'Sarah Wilson',
+        guestPhone: '9876543213',
+        checkinDate: '2026-02-18',
+        checkoutDate: '2026-02-22',
+        adults: 2,
+        children: 2,
+        bookingId: 'RES004',
+        status: 'booked'
+    },
+    {
+        roomNumber: '501',
+        guestName: 'David Lee',
+        guestPhone: '9876543214',
+        checkinDate: '2026-02-20',
+        checkoutDate: '2026-02-25',
+        adults: 2,
+        children: 0,
+        bookingId: 'RES005',
+        status: 'booked'
+    }
+];
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    displayRooms();
+});
+
+// Display rooms
+function displayRooms() {
+    const roomList = document.getElementById('roomList');
+
+    // Get filter values
+    const roomTypeFilter = document.getElementById('roomTypeFilter').value;
+    const statusFilter = document.getElementById('statusFilter').value;
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+    // Filter rooms
+    let filteredRooms = [...roomsData];
+
+    // Filter by room type
+    if (roomTypeFilter !== 'all') {
+        filteredRooms = filteredRooms.filter(room => room.type === roomTypeFilter);
+    }
+
+    // Filter by search term
+    if (searchTerm) {
+        filteredRooms = filteredRooms.filter(room => room.number.includes(searchTerm));
+    }
+
+    // Filter by status
+    if (statusFilter !== 'all') {
+        filteredRooms = filteredRooms.filter(room => {
+            const isBooked = bookingsData.some(booking => booking.roomNumber === room.number);
+            return statusFilter === 'available' ? !isBooked : isBooked;
+        });
+    }
+
+    // Sort rooms by room number
+    filteredRooms.sort((a, b) => parseInt(a.number) - parseInt(b.number));
+
+    if (filteredRooms.length === 0) {
+        roomList.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-door-closed"></i>
+                <h3>No rooms found</h3>
+                <p>Try adjusting your filters</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Generate HTML for each room
+    let html = '';
+    filteredRooms.forEach(room => {
+        const booking = bookingsData.find(b => b.roomNumber === room.number);
+        const isBooked = !!booking;
+
+        html += `
+            <div class="room-item ${isBooked ? 'booked' : 'available'}">
+                <div class="room-header">
+                    <div>
+                        <span class="room-number">
+                            <i class="fas fa-door-open"></i> Room ${room.number}
+                        </span>
+                        <span class="room-type">${room.typeName}</span>
+                    </div>
+                    <span class="status-badge ${isBooked ? 'status-booked' : 'status-available'}">
+                        ${isBooked ? 'Booked' : 'Available'}
+                    </span>
+                </div>
+
+                <div class="room-details">
+
+                </div>
+
+                ${isBooked ? getBookingDetailsHTML(booking) : getAvailableHTML(room)}
+
+                <div class="room-actions">
+                    ${isBooked ?
+                        `<button class="btn-small btn-view" onclick="viewBooking('${booking.bookingId}')">
+                            <i class="fas fa-eye"></i> View Details
+                        </button>` :
+                        `<button class="btn-small btn-book" onclick="bookRoom('${room.number}')">
+                            <i class="fas fa-calendar-plus"></i> Book Now
+                        </button>`
+                    }
+                </div>
+            </div>
+        `;
+    });
+
+    roomList.innerHTML = html;
+}
+
+// Get booking details HTML
+function getBookingDetailsHTML(booking) {
+    return `
+        <div class="booking-details">
+            <div class="booking-header">
+                <h4><i class="fas fa-user"></i> Guest Information</h4>
+                <span style="font-size: 12px; color: #718096;">Booking ID: ${booking.bookingId}</span>
+            </div>
+            <div class="booking-info">
+                <div class="info-row">
+                    <span class="info-label">Guest Name</span>
+                    <span class="info-value">${booking.guestName}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Phone Number</span>
+                    <span class="info-value">${booking.guestPhone}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Check-in Date</span>
+                    <span class="info-value">${formatDate(booking.checkinDate)}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Check-out Date</span>
+                    <span class="info-value">${formatDate(booking.checkoutDate)}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Guests</span>
+                    <span class="info-value">${booking.adults} Adults, ${booking.children} Children</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Get available message HTML
+function getAvailableHTML(room) {
+    return `
+        <div class="available-message">
+            <i class="fas fa-check-circle"></i>
+            <span>Room ${room.number} is available for booking</span>
+        </div>
+    `;
+}
+
+// Filter rooms
+function filterRooms() {
+    displayRooms();
+}
+
+// View booking details
+function viewBooking(bookingId) {
+    const booking = bookingsData.find(b => b.bookingId === bookingId);
+    if (booking) {
+        showNotification(`Viewing booking: ${booking.bookingId} - ${booking.guestName}`, 'info');
+        // Here you can open a modal or navigate to booking details page
+    }
+}
+
+// Book room
+function bookRoom(roomNumber) {
+    showNotification(`Booking Room ${roomNumber} - Redirecting to reservation form...`, 'info');
+    // Navigate to add reservation page
+    setTimeout(() => {
+        window.location.href = `add-reservation.html?room=${roomNumber}`;
+    }, 1500);
+}
+
+// Go back to dashboard
+function goBack() {
+    window.location.href = 'receptionist-dashboard.html';
+}
+
+// Format date
+function formatDate(dateString) {
+    const options = { day: '2-digit', month: 'short', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString('en-IN', options);
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    const notificationContainer = document.getElementById('notification');
+
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+
+    let icon = 'fa-info-circle';
+    if (type === 'success') icon = 'fa-check-circle';
+    if (type === 'error') icon = 'fa-times-circle';
+
+    notification.innerHTML = `
+        <i class="fas ${icon}"></i>
+        <span>${message}</span>
+    `;
+
+    notificationContainer.appendChild(notification);
+
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 300);
+        }
+    }, 3000);
+}
