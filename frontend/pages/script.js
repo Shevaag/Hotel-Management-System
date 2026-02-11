@@ -325,3 +325,451 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Local storage not available');
     }
 });
+
+// Add Reservation JavaScript
+
+// Generate random reservation number
+function generateReservationNo() {
+    const prefix = 'RES';
+    const timestamp = Date.now().toString().slice(-6);
+    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+    return `${prefix}${timestamp}${random}`;
+}
+
+// Calculate nights between two dates
+function calculateNights(checkinDate, checkoutDate) {
+    const checkin = new Date(checkinDate);
+    const checkout = new Date(checkoutDate);
+    const diffTime = checkout - checkin;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays > 0 ? diffDays : 0;
+}
+
+// Get room price based on room type
+function getRoomPrice(roomType) {
+    const prices = {
+        'standard': 3000,
+        'deluxe': 5000,
+        'suite': 8000,
+        'family': 10000,
+        'presidential': 15000
+    };
+    return prices[roomType] || 0;
+}
+
+// Calculate and show price summary
+function calculatePrice() {
+    const roomType = document.getElementById('roomType').value;
+    const checkinDate = document.getElementById('checkinDate').value;
+    const checkoutDate = document.getElementById('checkoutDate').value;
+
+    if (!roomType || !checkinDate || !checkoutDate) {
+        document.getElementById('priceSummary').style.display = 'none';
+        return;
+    }
+
+    const nights = calculateNights(checkinDate, checkoutDate);
+    if (nights <= 0) {
+        showNotification('Check-out date must be after check-in date', 'error');
+        return;
+    }
+
+    const roomPrice = getRoomPrice(roomType);
+    const roomCharges = roomPrice * nights;
+    const tax = roomCharges * 0.18;
+    const total = roomCharges + tax;
+
+    // Get room type text
+    const roomTypeSelect = document.getElementById('roomType');
+    const roomTypeText = roomTypeSelect.options[roomTypeSelect.selectedIndex]?.text.split(' - ')[0] || roomType;
+
+    // Update summary
+    document.getElementById('summaryRoomType').textContent = roomTypeText;
+    document.getElementById('summaryNights').textContent = nights + (nights > 1 ? ' nights' : ' night');
+    document.getElementById('summaryRoomCharges').textContent = '₹' + roomCharges.toLocaleString();
+    document.getElementById('summaryTax').textContent = '₹' + tax.toLocaleString();
+    document.getElementById('summaryTotal').textContent = '₹' + total.toLocaleString();
+
+    document.getElementById('priceSummary').style.display = 'block';
+}
+
+// Save reservation
+function saveReservation(event) {
+    event.preventDefault();
+
+    // Get form data
+    const formData = {
+        reservationNo: document.getElementById('reservationNo').value,
+        guestName: document.getElementById('guestName').value,
+        address: document.getElementById('address').value,
+        phone: document.getElementById('phone').value,
+        email: document.getElementById('email').value,
+        roomType: document.getElementById('roomType').value,
+        checkinDate: document.getElementById('checkinDate').value,
+        checkoutDate: document.getElementById('checkoutDate').value,
+        adults: document.getElementById('adults').value,
+        children: document.getElementById('children').value,
+        specialRequests: document.getElementById('specialRequests').value,
+        paymentMethod: document.getElementById('paymentMethod').value,
+        advanceAmount: document.getElementById('advanceAmount').value || 0,
+        status: 'confirmed',
+        bookingDate: new Date().toISOString()
+    };
+
+    // Validate required fields
+    if (!formData.guestName || !formData.phone || !formData.roomType || !formData.checkinDate || !formData.checkoutDate) {
+        showNotification('Please fill all required fields', 'error');
+        return;
+    }
+
+    // Validate dates
+    const nights = calculateNights(formData.checkinDate, formData.checkoutDate);
+    if (nights <= 0) {
+        showNotification('Check-out date must be after check-in date', 'error');
+        return;
+    }
+
+    // Show loading state
+    const submitBtn = event.target.querySelector('.btn-primary');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    submitBtn.disabled = true;
+
+    // Simulate API call
+    setTimeout(() => {
+        // Save to localStorage (temporary storage)
+        const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
+        reservations.push(formData);
+        localStorage.setItem('reservations', JSON.stringify(reservations));
+
+        showNotification('Reservation created successfully! ID: ' + formData.reservationNo, 'success');
+
+        // Reset button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+
+        // Optionally redirect back to dashboard after 2 seconds
+        setTimeout(() => {
+            goBack();
+        }, 2000);
+    }, 1500);
+}
+
+// Clear form
+function clearForm() {
+    if (confirm('Are you sure you want to clear all form fields?')) {
+        document.getElementById('reservationForm').reset();
+        document.getElementById('reservationNo').value = generateReservationNo();
+        document.getElementById('priceSummary').style.display = 'none';
+        showNotification('Form cleared', 'info');
+    }
+}
+
+// Go back to dashboard
+function goBack() {
+    window.location.href = 'receptionist-dashboard.html';
+}
+
+// Set minimum date for date inputs
+function setMinDates() {
+    const today = new Date().toISOString().split('T')[0];
+    const checkinInput = document.getElementById('checkinDate');
+    const checkoutInput = document.getElementById('checkoutDate');
+
+    checkinInput.min = today;
+
+    checkinInput.addEventListener('change', function() {
+        checkoutInput.min = this.value;
+        if (checkoutInput.value && checkoutInput.value < this.value) {
+            checkoutInput.value = '';
+        }
+        calculatePrice();
+    });
+
+    checkoutInput.addEventListener('change', calculatePrice);
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    const notificationContainer = document.getElementById('notification');
+
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+
+    let icon = 'fa-info-circle';
+    if (type === 'success') icon = 'fa-check-circle';
+    if (type === 'error') icon = 'fa-times-circle';
+    if (type === 'warning') icon = 'fa-exclamation-triangle';
+
+    notification.innerHTML = `
+        <i class="fas ${icon}"></i>
+        <span>${message}</span>
+    `;
+
+    notificationContainer.appendChild(notification);
+
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 300);
+        }
+    }, 4000);
+}
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    // Set auto-generated reservation number
+    document.getElementById('reservationNo').value = generateReservationNo();
+
+    // Set minimum dates for calendar
+    setMinDates();
+
+    // Add event listeners for price calculation
+    document.getElementById('roomType').addEventListener('change', calculatePrice);
+    document.getElementById('checkinDate').addEventListener('change', calculatePrice);
+    document.getElementById('checkoutDate').addEventListener('change', calculatePrice);
+
+    // Form submission
+    document.getElementById('reservationForm').addEventListener('submit', saveReservation);
+
+    // Welcome notification
+    setTimeout(() => {
+        showNotification('Fill in the reservation details', 'info');
+    }, 500);
+});
+
+// Add slideOut animation if not exists
+if (!document.querySelector('#notification-animation')) {
+    const style = document.createElement('style');
+    style.id = 'notification-animation';
+    style.textContent = `
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Room data
+const roomData = {
+    'standard': [
+        { number: '101', type: 'Standard', price: 3000, status: 'available' },
+        { number: '102', type: 'Standard', price: 3000, status: 'available' },
+        { number: '103', type: 'Standard', price: 3000, status: 'available' },
+        { number: '104', type: 'Standard', price: 3000, status: 'available' },
+        { number: '105', type: 'Standard', price: 3000, status: 'available' }
+    ],
+    'deluxe': [
+        { number: '201', type: 'Deluxe', price: 5000, status: 'available' },
+        { number: '202', type: 'Deluxe', price: 5000, status: 'available' },
+        { number: '203', type: 'Deluxe', price: 5000, status: 'available' },
+        { number: '204', type: 'Deluxe', price: 5000, status: 'available' },
+        { number: '205', type: 'Deluxe', price: 5000, status: 'available' }
+    ],
+    'suite': [
+        { number: '301', type: 'Executive Suite', price: 8000, status: 'available' },
+        { number: '302', type: 'Executive Suite', price: 8000, status: 'available' },
+        { number: '303', type: 'Executive Suite', price: 8000, status: 'available' }
+    ],
+    'family': [
+        { number: '401', type: 'Family Suite', price: 10000, status: 'available' },
+        { number: '402', type: 'Family Suite', price: 10000, status: 'available' },
+        { number: '403', type: 'Family Suite', price: 10000, status: 'available' }
+    ],
+    'presidential': [
+        { number: '501', type: 'Presidential Suite', price: 15000, status: 'available' },
+        { number: '502', type: 'Presidential Suite', price: 15000, status: 'available' }
+    ]
+};
+
+// Update room numbers based on selected room type
+function updateRoomNumbers() {
+    const roomType = document.getElementById('roomType').value;
+    const roomNumberSelect = document.getElementById('roomNumber');
+    const roomHint = document.getElementById('roomAvailabilityHint');
+
+    // Clear current options
+    roomNumberSelect.innerHTML = '';
+
+    if (!roomType) {
+        // No room type selected
+        const option = document.createElement('option');
+        option.value = '';
+        option.disabled = true;
+        option.selected = true;
+        option.textContent = '-- First select Room Type --';
+        roomNumberSelect.appendChild(option);
+        roomNumberSelect.disabled = true;
+        if (roomHint) roomHint.textContent = 'Select a room type first';
+        return;
+    }
+
+    // Add default option
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
+    defaultOption.textContent = '-- Select Room Number --';
+    roomNumberSelect.appendChild(defaultOption);
+
+    // Get rooms for selected type
+    const rooms = roomData[roomType] || [];
+
+    // Add room options
+    rooms.forEach(room => {
+        const option = document.createElement('option');
+        option.value = room.number;
+
+        // Show status
+        let statusText = '';
+        let statusClass = '';
+        if (room.status === 'available') {
+            statusText = 'Available';
+            statusClass = 'available';
+        } else if (room.status === 'booked') {
+            statusText = 'Booked';
+            statusClass = 'booked';
+        } else if (room.status === 'occupied') {
+            statusText = 'Occupied';
+            statusClass = 'occupied';
+        }
+
+        option.textContent = `${room.number} - ${room.type} (${statusText})`;
+        option.setAttribute('data-status', room.status);
+
+        // Disable if not available
+        if (room.status !== 'available') {
+            option.disabled = true;
+        }
+
+        roomNumberSelect.appendChild(option);
+    });
+
+    // Enable select
+    roomNumberSelect.disabled = false;
+
+    // Update hint
+    const availableCount = rooms.filter(r => r.status === 'available').length;
+    if (roomHint) {
+        if (availableCount === 0) {
+            roomHint.textContent = 'No rooms available for this type';
+            roomHint.style.color = '#e53e3e';
+        } else {
+            roomHint.textContent = `${availableCount} room(s) available`;
+            roomHint.style.color = '#38a169';
+        }
+    }
+}
+
+// Add this to your existing calculatePrice function
+function calculatePrice() {
+    const roomType = document.getElementById('roomType').value;
+    const checkinDate = document.getElementById('checkinDate').value;
+    const checkoutDate = document.getElementById('checkoutDate').value;
+    const roomNumber = document.getElementById('roomNumber').value;
+
+    if (!roomType || !checkinDate || !checkoutDate) {
+        document.getElementById('priceSummary').style.display = 'none';
+        return;
+    }
+
+    const nights = calculateNights(checkinDate, checkoutDate);
+    if (nights <= 0) {
+        showNotification('Check-out date must be after check-in date', 'error');
+        return;
+    }
+
+    const roomPrice = getRoomPrice(roomType);
+    const roomCharges = roomPrice * nights;
+    const tax = roomCharges * 0.18;
+    const total = roomCharges + tax;
+
+    // Get room type text
+    const roomTypeSelect = document.getElementById('roomType');
+    const roomTypeText = roomTypeSelect.options[roomTypeSelect.selectedIndex]?.text.split(' - ')[0] || roomType;
+
+    // Update summary - include room number if selected
+    let roomInfo = roomTypeText;
+    if (roomNumber) {
+        roomInfo += ` - Room ${roomNumber}`;
+    }
+
+    document.getElementById('summaryRoomType').textContent = roomInfo;
+    document.getElementById('summaryNights').textContent = nights + (nights > 1 ? ' nights' : ' night');
+    document.getElementById('summaryRoomCharges').textContent = '₹' + roomCharges.toLocaleString();
+    document.getElementById('summaryTax').textContent = '₹' + tax.toLocaleString();
+    document.getElementById('summaryTotal').textContent = '₹' + total.toLocaleString();
+
+    document.getElementById('priceSummary').style.display = 'block';
+}
+
+// Update saveReservation function to include room number
+function saveReservation(event) {
+    event.preventDefault();
+
+    // Get form data
+    const formData = {
+        reservationNo: document.getElementById('reservationNo').value,
+        guestName: document.getElementById('guestName').value,
+        address: document.getElementById('address').value,
+        phone: document.getElementById('phone').value,
+        email: document.getElementById('email').value,
+        roomType: document.getElementById('roomType').value,
+        roomNumber: document.getElementById('roomNumber').value, // NEW
+        checkinDate: document.getElementById('checkinDate').value,
+        checkoutDate: document.getElementById('checkoutDate').value,
+        adults: document.getElementById('adults').value,
+        children: document.getElementById('children').value,
+        specialRequests: document.getElementById('specialRequests').value,
+        paymentMethod: document.getElementById('paymentMethod').value,
+        advanceAmount: document.getElementById('advanceAmount').value || 0,
+        status: 'confirmed',
+        bookingDate: new Date().toISOString()
+    };
+
+    // Validate required fields - add roomNumber
+    if (!formData.guestName || !formData.phone || !formData.roomType || !formData.roomNumber || !formData.checkinDate || !formData.checkoutDate) {
+        showNotification('Please fill all required fields', 'error');
+        return;
+    }
+
+    // ... rest of your saveReservation function
+}
+
+// Update initialize function
+document.addEventListener('DOMContentLoaded', function() {
+    // Set auto-generated reservation number
+    document.getElementById('reservationNo').value = generateReservationNo();
+
+    // Set minimum dates for calendar
+    setMinDates();
+
+    // Add event listeners
+    document.getElementById('roomType').addEventListener('change', function() {
+        updateRoomNumbers();
+        calculatePrice();
+    });
+
+    document.getElementById('roomNumber').addEventListener('change', calculatePrice);
+    document.getElementById('checkinDate').addEventListener('change', calculatePrice);
+    document.getElementById('checkoutDate').addEventListener('change', calculatePrice);
+
+    // Form submission
+    document.getElementById('reservationForm').addEventListener('submit', saveReservation);
+
+    // Welcome notification
+    setTimeout(() => {
+        showNotification('Fill in the reservation details', 'info');
+    }, 500);
+});

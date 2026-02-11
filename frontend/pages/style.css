@@ -949,58 +949,311 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Keyboard shortcuts for manager
-document.addEventListener('keydown', function(e) {
-    // Don't trigger if user is typing in an input field
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-        return;
+/* Add new reservation*/
+
+/* Form Header */
+.form-header {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.form-header h2 {
+    color: #2d3748;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+/* Back Button */
+.back-button-container {
+    margin-bottom: 25px;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    color: #3182ce;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0;
+    transition: all 0.3s;
+}
+
+.back-btn:hover {
+    color: #2c5282;
+    transform: translateX(-5px);
+}
+
+.back-btn i {
+    font-size: 16px;
+}
+
+/* Reservation Form */
+.reservation-form {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 15px;
+}
+
+.form-group label i {
+    color: #3182ce;
+    margin-right: 8px;
+    width: 18px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: all 0.3s;
+    background: white;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+.form-control[readonly] {
+    background: #f7fafc;
+    color: #4a5568;
+    border-color: #cbd5e0;
+    cursor: not-allowed;
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+}
+
+select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 16px;
+    padding-right: 45px;
+}
+
+.field-hint {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #718096;
+}
+
+/* Form Row */
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group.half {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+/* Required Field */
+.required {
+    color: #e53e3e;
+    margin-left: 4px;
+}
+
+/* Form Section */
+.form-section {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 25px;
+    margin: 30px 0;
+    border: 1px solid #e2e8f0;
+}
+
+.section-title {
+    color: #2d3748;
+    font-size: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+/* Price Summary */
+.price-summary {
+    background: #fefcbf;
+    border: 2px solid #ecc94b;
+    border-radius: 10px;
+    padding: 25px;
+    margin: 30px 0;
+}
+
+.price-summary h4 {
+    color: #2d3748;
+    font-size: 18px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.price-summary h4 i {
+    color: #d69e2e;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #fef3c7;
+    color: #4a5568;
+}
+
+.summary-row.total {
+    border-bottom: none;
+    margin-top: 10px;
+    padding-top: 15px;
+    border-top: 2px solid #ecc94b;
+    font-weight: 700;
+    color: #2d3748;
+    font-size: 18px;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 40px;
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.btn i {
+    font-size: 16px;
+}
+
+.btn-primary {
+    background: #3182ce;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2c5282;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
+}
+
+.btn-secondary {
+    background: #718096;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #4a5568;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(113, 128, 150, 0.3);
+}
+
+.btn-danger {
+    background: #e53e3e;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c53030;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 15px;
     }
 
-    // Ctrl + 1: Add Reservation
-    if (e.ctrlKey && e.key === '1') {
-        e.preventDefault();
-        addReservation();
+    .form-group.half {
+        width: 100%;
     }
 
-    // Ctrl + 2: View Bookings
-    if (e.ctrlKey && e.key === '2') {
-        e.preventDefault();
-        viewBookings();
+    .form-actions {
+        flex-direction: column;
     }
 
-    // Ctrl + 3: Calculate Bill
-    if (e.ctrlKey && e.key === '3') {
-        e.preventDefault();
-        calculateBill();
+    .btn {
+        width: 100%;
+        justify-content: center;
     }
 
-    // Ctrl + 4: Manage Rooms
-    if (e.ctrlKey && e.key === '4') {
-        e.preventDefault();
-        manageRooms();
+    .back-btn {
+        padding: 8px 0;
     }
 
-    // Ctrl + 5: View Reports
-    if (e.ctrlKey && e.key === '5') {
-        e.preventDefault();
-        viewReports();
+    .price-summary {
+        padding: 20px;
     }
+}
 
-    // Ctrl + 6: Modify Reservations
-    if (e.ctrlKey && e.key === '6') {
-        e.preventDefault();
-        modifyReservations();
-    }
+/* Auto-generated Reservation Number */
+#reservationNo {
+    font-weight: 600;
+    color: #2c5282;
+    letter-spacing: 1px;
+}
 
-    // Ctrl + H: Help
-    if (e.ctrlKey && e.key.toLowerCase() === 'h') {
-        e.preventDefault();
-        showHelp();
-    }
+/* Room status colors in dropdown */
+select#roomNumber option[data-status="available"] {
+    color: #38a169;
+}
 
-    // Ctrl + Q: Logout
-    if (e.ctrlKey && e.key.toLowerCase() === 'q') {
-        e.preventDefault();
-        logout();
-    }
-});
+select#roomNumber option[data-status="booked"],
+select#roomNumber option[data-status="occupied"] {
+    color: #e53e3e;
+    background: #fff5f5;
+}
+
+/* Room availability hint */
+#roomAvailabilityHint {
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+    transition: color 0.3s;
+}
+
+/* Update price summary to include room number */
+.summary-row span:last-child {
+    font-weight: 500;
+}
+
+#summaryRoomType {
+    font-weight: 600;
+    color: #2c5282;
+}
