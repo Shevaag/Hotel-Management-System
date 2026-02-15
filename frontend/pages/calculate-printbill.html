@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculate Bill | Ocean View Resort</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="calculate-bill-page">
+<div class="container">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-icon">
+            <i class="fas fa-hotel hotel-icon"></i>
+            <h1>Ocean View Resort</h1>
+        </div>
+        <p>Calculate & Print Bill</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="card">
+        <div class="page-header">
+            <h2><i class="fas fa-calculator"></i> Bill Calculator</h2>
+            <button class="btn back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+        </div>
+
+        <!-- Input Section -->
+        <div class="bill-input-section">
+            <div class="input-group">
+                <label for="reservationNo"><i class="fas fa-hashtag"></i> Reservation Number</label>
+                <div class="search-input-group">
+                    <input type="text" id="reservationNo" placeholder="Enter reservation number" class="bill-input">
+                    <button class="btn btn-primary" onclick="fetchReservation()">
+                        <i class="fas fa-search"></i> Get Details
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bill Details Section (Hidden by default) -->
+        <div id="billDetailsSection" style="display: none;">
+            <!-- Guest & Reservation Info -->
+            <div class="bill-info-card">
+                <h3><i class="fas fa-file-invoice"></i> Reservation Details</h3>
+                <div class="info-grid">
+                    <div class="info-row">
+                        <span class="info-label">Reservation No:</span>
+                        <span class="info-value" id="displayReservationNo">RES123456</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Guest Name:</span>
+                        <span class="info-value" id="guestName">John Smith</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Phone:</span>
+                        <span class="info-value" id="guestPhone">9876543210</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Room Number:</span>
+                        <span class="info-value" id="roomNumber">201</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Room Type:</span>
+                        <span class="info-value" id="roomType">Deluxe Room</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Price per Day:</span>
+                        <span class="info-value" id="pricePerDay">₹5,000</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Check-in Date:</span>
+                        <span class="info-value" id="checkinDate">15 Feb 2026</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Check-out Date:</span>
+                        <span class="info-value" id="checkoutDate">18 Feb 2026</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Nights:</span>
+                        <span class="info-value" id="nights">3</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bill Summary -->
+            <div class="bill-summary-card">
+                <h3><i class="fas fa-receipt"></i> Bill Summary</h3>
+
+                <div class="bill-items">
+                    <div class="bill-item">
+                        <span>Room Charges (3 nights × ₹5,000)</span>
+                        <span id="roomCharges">₹15,000</span>
+                    </div>
+
+                    <div class="bill-item">
+                        <span>Tax (18%)</span>
+                        <span id="taxAmount">₹2,700</span>
+                    </div>
+
+                    <div class="bill-item total">
+                        <span>Total Amount</span>
+                        <span id="totalAmount">₹17,700</span>
+                    </div>
+                </div>
+
+                <div class="bill-actions">
+                    <button class="btn btn-success" onclick="printBill()">
+                        <i class="fas fa-print"></i> Print Bill
+                    </button>
+                    <button class="btn btn-primary" onclick="saveBill()">
+                        <i class="fas fa-save"></i> Save Bill
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetBill()">
+                        <i class="fas fa-redo-alt"></i> New Bill
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State (Shown when no bill loaded) -->
+        <div id="emptyState" class="empty-state">
+            <i class="fas fa-receipt"></i>
+            <h3>No Bill Loaded</h3>
+            <p>Enter a reservation number and click "Get Details" to generate bill</p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2026 Ocean View Resort | Billing System</p>
+    </footer>
+</div>
+
+<!-- Print Modal (Hidden by default) -->
+<div id="printModal" class="modal" style="display: none;">
+    <div class="modal-content print-modal">
+        <div class="modal-header">
+            <h3><i class="fas fa-print"></i> Print Bill</h3>
+            <button class="modal-close" onclick="closePrintModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body" id="printPreview">
+            <!-- Print preview will be loaded here -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closePrintModal()">Cancel</button>
+            <button class="btn btn-success" onclick="confirmPrint()">
+                <i class="fas fa-print"></i> Print
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Notification Container -->
+<div id="notification"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

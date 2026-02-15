@@ -1065,3 +1065,814 @@ function showNotification(message, type = 'info') {
         }
     }, 3000);
 }
+
+// Calculate Bill JavaScript
+
+// Sample reservation data
+const sampleReservations = [
+    {
+        id: 'RES123456',
+        guestName: 'John Smith',
+        guestPhone: '9876543210',
+        roomNumber: '201',
+        roomType: 'Deluxe Room',
+        pricePerDay: 5000,
+        checkinDate: '2026-02-15',
+        checkoutDate: '2026-02-18',
+        nights: 3
+    },
+    {
+        id: 'RES123457',
+        guestName: 'Emma Johnson',
+        guestPhone: '9876543211',
+        roomNumber: '102',
+        roomType: 'Standard Room',
+        pricePerDay: 3000,
+        checkinDate: '2026-02-10',
+        checkoutDate: '2026-02-14',
+        nights: 4
+    },
+    {
+        id: 'RES123458',
+        guestName: 'Michael Brown',
+        guestPhone: '9876543212',
+        roomNumber: '301',
+        roomType: 'Executive Suite',
+        pricePerDay: 8000,
+        checkinDate: '2026-02-12',
+        checkoutDate: '2026-02-16',
+        nights: 4
+    },
+    {
+        id: 'RES123459',
+        guestName: 'Sarah Wilson',
+        guestPhone: '9876543213',
+        roomNumber: '401',
+        roomType: 'Family Suite',
+        pricePerDay: 10000,
+        checkinDate: '2026-02-18',
+        checkoutDate: '2026-02-22',
+        nights: 4
+    },
+    {
+        id: 'RES123460',
+        guestName: 'David Lee',
+        guestPhone: '9876543214',
+        roomNumber: '501',
+        roomType: 'Presidential Suite',
+        pricePerDay: 15000,
+        checkinDate: '2026-02-20',
+        checkoutDate: '2026-02-25',
+        nights: 5
+    }
+];
+
+// Current bill data
+let currentBillData = null;
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    // Show empty state
+    document.getElementById('emptyState').style.display = 'block';
+    document.getElementById('billDetailsSection').style.display = 'none';
+});
+
+// Fetch reservation details
+function fetchReservation() {
+    const reservationNo = document.getElementById('reservationNo').value.trim();
+
+    if (!reservationNo) {
+        showNotification('Please enter a reservation number', 'error');
+        return;
+    }
+
+    // Find reservation in sample data
+    const reservation = sampleReservations.find(r => r.id === reservationNo);
+
+    if (!reservation) {
+        showNotification('Reservation not found', 'error');
+        return;
+    }
+
+    // Calculate bill
+    calculateBill(reservation);
+}
+
+// Calculate bill
+function calculateBill(reservation) {
+    // Store current bill data
+    currentBillData = reservation;
+
+    // Calculate charges
+    const roomCharges = reservation.pricePerDay * reservation.nights;
+    const tax = roomCharges * 0.18; // 18% GST
+    const total = roomCharges + tax;
+
+    // Format dates
+    const checkinDate = formatDate(reservation.checkinDate);
+    const checkoutDate = formatDate(reservation.checkoutDate);
+
+    // Update reservation details
+    document.getElementById('displayReservationNo').textContent = reservation.id;
+    document.getElementById('guestName').textContent = reservation.guestName;
+    document.getElementById('guestPhone').textContent = reservation.guestPhone;
+    document.getElementById('roomNumber').textContent = reservation.roomNumber;
+    document.getElementById('roomType').textContent = reservation.roomType;
+    document.getElementById('pricePerDay').textContent = '₹' + reservation.pricePerDay.toLocaleString();
+    document.getElementById('checkinDate').textContent = checkinDate;
+    document.getElementById('checkoutDate').textContent = checkoutDate;
+    document.getElementById('nights').textContent = reservation.nights;
+
+    // Update bill summary
+    document.getElementById('roomCharges').textContent = '₹' + roomCharges.toLocaleString();
+    document.getElementById('taxAmount').textContent = '₹' + tax.toLocaleString();
+    document.getElementById('totalAmount').textContent = '₹' + total.toLocaleString();
+
+    // Hide empty state, show bill details
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('billDetailsSection').style.display = 'block';
+
+    showNotification('Bill generated successfully', 'success');
+}
+
+// Print bill
+function printBill() {
+    if (!currentBillData) {
+        showNotification('No bill to print', 'error');
+        return;
+    }
+
+    // Calculate totals
+    const roomCharges = currentBillData.pricePerDay * currentBillData.nights;
+    const tax = roomCharges * 0.18;
+    const total = roomCharges + tax;
+
+    // Create print preview HTML
+    const printHTML = `
+        <div class="print-bill">
+            <div class="print-header">
+                <h2>Ocean View Resort</h2>
+                <p>Beach Road, Goa - 403001 | Tel: 0832-123456</p>
+                <p>GST: 27ABCDE1234F1Z5</p>
+                <h3 style="margin-top: 20px; color: #2d3748;">TAX INVOICE</h3>
+            </div>
+
+            <div class="print-section">
+                <h4>Invoice Details</h4>
+                <div class="print-row">
+                    <span class="print-label">Invoice No:</span>
+                    <span class="print-value">INV-${currentBillData.id}</span>
+                </div>
+                <div class="print-row">
+                    <span class="print-label">Date:</span>
+                    <span class="print-value">${new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                </div>
+                <div class="print-row">
+                    <span class="print-label">Reservation No:</span>
+                    <span class="print-value">${currentBillData.id}</span>
+                </div>
+            </div>
+
+            <div class="print-section">
+                <h4>Guest Details</h4>
+                <div class="print-row">
+                    <span class="print-label">Guest Name:</span>
+                    <span class="print-value">${currentBillData.guestName}</span>
+                </div>
+                <div class="print-row">
+                    <span class="print-label">Phone:</span>
+                    <span class="print-value">${currentBillData.guestPhone}</span>
+                </div>
+                <div class="print-row">
+                    <span class="print-label">Room No:</span>
+                    <span class="print-value">${currentBillData.roomNumber}</span>
+                </div>
+                <div class="print-row">
+                    <span class="print-label">Room Type:</span>
+                    <span class="print-value">${currentBillData.roomType}</span>
+                </div>
+            </div>
+
+            <div class="print-section">
+                <h4>Stay Details</h4>
+                <div class="print-row">
+                    <span class="print-label">Check-in:</span>
+                    <span class="print-value">${formatDate(currentBillData.checkinDate)}</span>
+                </div>
+                <div class="print-row">
+                    <span class="print-label">Check-out:</span>
+                    <span class="print-value">${formatDate(currentBillData.checkoutDate)}</span>
+                </div>
+                <div class="print-row">
+                    <span class="print-label">Nights:</span>
+                    <span class="print-value">${currentBillData.nights}</span>
+                </div>
+                <div class="print-row">
+                    <span class="print-label">Price per Night:</span>
+                    <span class="print-value">₹${currentBillData.pricePerDay.toLocaleString()}</span>
+                </div>
+            </div>
+
+            <div class="print-section">
+                <h4>Charge Details</h4>
+                <div class="print-row">
+                    <span class="print-label">Room Charges:</span>
+                    <span class="print-value">₹${roomCharges.toLocaleString()}</span>
+                </div>
+                <div class="print-row">
+                    <span class="print-label">CGST (9%):</span>
+                    <span class="print-value">₹${(tax/2).toLocaleString()}</span>
+                </div>
+                <div class="print-row">
+                    <span class="print-label">SGST (9%):</span>
+                    <span class="print-value">₹${(tax/2).toLocaleString()}</span>
+                </div>
+                <div class="print-total">
+                    <span>Total Amount:</span>
+                    <span>₹${total.toLocaleString()}</span>
+                </div>
+            </div>
+
+            <div class="print-footer">
+                <p>** This is a computer generated invoice **</p>
+                <p>Thank you for choosing Ocean View Resort!</p>
+                <p style="margin-top: 10px;">www.oceanviewresort.com | support@oceanviewresort.com</p>
+            </div>
+        </div>
+    `;
+
+    // Show print modal
+    document.getElementById('printPreview').innerHTML = printHTML;
+    document.getElementById('printModal').style.display = 'flex';
+}
+
+// Confirm print
+function confirmPrint() {
+    const printContent = document.getElementById('printPreview').innerHTML;
+    const printWindow = window.open('', '_blank');
+
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Bill Invoice - ${currentBillData.id}</title>
+            <style>
+                body { font-family: Arial, sans-serif; padding: 40px; }
+                .print-bill { max-width: 800px; margin: 0 auto; }
+                .print-header { text-align: center; margin-bottom: 30px; }
+                .print-section { margin-bottom: 25px; }
+                .print-section h4 { border-bottom: 1px solid #ddd; padding-bottom: 8px; }
+                .print-row { display: flex; justify-content: space-between; padding: 5px 0; }
+                .print-total { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 20px; border-top: 2px solid #000; font-size: 18px; font-weight: bold; }
+                .print-footer { margin-top: 40px; text-align: center; color: #666; }
+            </style>
+        </head>
+        <body>
+            ${printContent}
+        </body>
+        </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+
+    closePrintModal();
+    showNotification('Bill sent to printer', 'success');
+}
+
+// Close print modal
+function closePrintModal() {
+    document.getElementById('printModal').style.display = 'none';
+}
+
+// Save bill
+function saveBill() {
+    if (!currentBillData) {
+        showNotification('No bill to save', 'error');
+        return;
+    }
+
+    // Calculate totals
+    const roomCharges = currentBillData.pricePerDay * currentBillData.nights;
+    const tax = roomCharges * 0.18;
+    const total = roomCharges + tax;
+
+    // Create bill object
+    const billData = {
+        invoiceNo: 'INV-' + currentBillData.id,
+        date: new Date().toISOString(),
+        reservation: currentBillData,
+        roomCharges: roomCharges,
+        tax: tax,
+        total: total
+    };
+
+    // Save to localStorage (simulate database save)
+    const savedBills = JSON.parse(localStorage.getItem('bills') || '[]');
+    savedBills.push(billData);
+    localStorage.setItem('bills', JSON.stringify(savedBills));
+
+    showNotification('Bill saved successfully', 'success');
+}
+
+// Reset bill
+function resetBill() {
+    document.getElementById('reservationNo').value = '';
+    document.getElementById('emptyState').style.display = 'block';
+    document.getElementById('billDetailsSection').style.display = 'none';
+    currentBillData = null;
+    showNotification('Form cleared', 'info');
+}
+
+// Go back to dashboard
+function goBack() {
+    // Check user role from localStorage
+    const userRole = localStorage.getItem('userRole') || 'receptionist';
+
+    if (userRole === 'manager') {
+        window.location.href = 'manager-dashboard.html';
+    } else {
+        window.location.href = 'receptionist-dashboard.html';
+    }
+}
+
+// Format date
+function formatDate(dateString) {
+    const options = { day: '2-digit', month: 'short', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString('en-IN', options);
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    const notificationContainer = document.getElementById('notification');
+
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+
+    let icon = 'fa-info-circle';
+    if (type === 'success') icon = 'fa-check-circle';
+    if (type === 'error') icon = 'fa-times-circle';
+
+    notification.innerHTML = `
+        <i class="fas ${icon}"></i>
+        <span>${message}</span>
+    `;
+
+    notificationContainer.appendChild(notification);
+
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 300);
+        }
+    }, 3000);
+}
+
+// Manage Rooms JavaScript
+
+// Sample room database (from your earlier sample)
+let roomsData = [
+    // Standard Rooms - Floor 1
+    { number: '101', floor: 1, type: 'standard', typeName: 'Standard Room', price: 3000, maxGuests: 2, status: 'available', features: ['WiFi', 'TV', 'AC'] },
+    { number: '102', floor: 1, type: 'standard', typeName: 'Standard Room', price: 3000, maxGuests: 2, status: 'available', features: ['WiFi', 'TV', 'AC'] },
+    { number: '103', floor: 1, type: 'standard', typeName: 'Standard Room', price: 3000, maxGuests: 2, status: 'maintenance', features: ['WiFi', 'TV', 'AC'] },
+    { number: '104', floor: 1, type: 'standard', typeName: 'Standard Room', price: 3000, maxGuests: 2, status: 'available', features: ['WiFi', 'TV', 'AC'] },
+    { number: '105', floor: 1, type: 'standard', typeName: 'Standard Room', price: 3000, maxGuests: 2, status: 'available', features: ['WiFi', 'TV', 'AC'] },
+
+    // Deluxe Rooms - Floor 2
+    { number: '201', floor: 2, type: 'deluxe', typeName: 'Deluxe Room', price: 5000, maxGuests: 3, status: 'available', features: ['WiFi', 'TV', 'AC', 'Mini Bar', 'Balcony'] },
+    { number: '202', floor: 2, type: 'deluxe', typeName: 'Deluxe Room', price: 5000, maxGuests: 3, status: 'available', features: ['WiFi', 'TV', 'AC', 'Mini Bar', 'Balcony'] },
+    { number: '203', floor: 2, type: 'deluxe', typeName: 'Deluxe Room', price: 5000, maxGuests: 3, status: 'available', features: ['WiFi', 'TV', 'AC', 'Mini Bar', 'Balcony'] },
+    { number: '204', floor: 2, type: 'deluxe', typeName: 'Deluxe Room', price: 5000, maxGuests: 3, status: 'available', features: ['WiFi', 'TV', 'AC', 'Mini Bar', 'Balcony'] },
+    { number: '205', floor: 2, type: 'deluxe', typeName: 'Deluxe Room', price: 5000, maxGuests: 3, status: 'available', features: ['WiFi', 'TV', 'AC', 'Mini Bar', 'Balcony'] },
+
+    // Executive Suites - Floor 3
+    { number: '301', floor: 3, type: 'suite', typeName: 'Executive Suite', price: 8000, maxGuests: 4, status: 'available', features: ['WiFi', 'TV', 'AC', 'Mini Bar', 'Balcony', 'Living Area'] },
+    { number: '302', floor: 3, type: 'suite', typeName: 'Executive Suite', price: 8000, maxGuests: 4, status: 'maintenance', features: ['WiFi', 'TV', 'AC', 'Mini Bar', 'Balcony', 'Living Area'] },
+    { number: '303', floor: 3, type: 'suite', typeName: 'Executive Suite', price: 8000, maxGuests: 4, status: 'available', features: ['WiFi', 'TV', 'AC', 'Mini Bar', 'Balcony', 'Living Area'] },
+
+    // Family Suites - Floor 4
+    { number: '401', floor: 4, type: 'family', typeName: 'Family Suite', price: 10000, maxGuests: 5, status: 'available', features: ['WiFi', 'TV', 'AC', 'Mini Bar', 'Balcony', 'Living Area', 'Kitchenette'] },
+    { number: '402', floor: 4, type: 'family', typeName: 'Family Suite', price: 10000, maxGuests: 5, status: 'available', features: ['WiFi', 'TV', 'AC', 'Mini Bar', 'Balcony', 'Living Area', 'Kitchenette'] },
+    { number: '403', floor: 4, type: 'family', typeName: 'Family Suite', price: 10000, maxGuests: 5, status: 'available', features: ['WiFi', 'TV', 'AC', 'Mini Bar', 'Balcony', 'Living Area', 'Kitchenette'] },
+
+    // Presidential Suites - Floor 5
+    { number: '501', floor: 5, type: 'presidential', typeName: 'Presidential Suite', price: 15000, maxGuests: 6, status: 'available', features: ['WiFi', 'TV', 'AC', 'Mini Bar', 'Balcony', 'Living Area', 'Dining Area', 'Jacuzzi'] },
+    { number: '502', floor: 5, type: 'presidential', typeName: 'Presidential Suite', price: 15000, maxGuests: 6, status: 'available', features: ['WiFi', 'TV', 'AC', 'Mini Bar', 'Balcony', 'Living Area', 'Dining Area', 'Jacuzzi'] }
+];
+
+// Current state
+let currentRoomId = null;
+let filteredRooms = [...roomsData];
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    displayRooms();
+    updateStats();
+});
+
+// Display rooms in table
+function displayRooms() {
+    const tbody = document.getElementById('roomsTableBody');
+    const emptyState = document.getElementById('emptyState');
+
+    if (filteredRooms.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+    }
+
+    emptyState.style.display = 'none';
+
+    let html = '';
+    filteredRooms.forEach(room => {
+        html += `
+            <tr>
+                <td><strong>${room.number}</strong></td>
+                <td>Floor ${room.floor}</td>
+                <td>${room.typeName}</td>
+                <td>₹${room.price.toLocaleString()}</td>
+                <td>${room.maxGuests}</td>
+                <td>
+                    <div class="features-list">
+                        ${room.features.slice(0, 3).map(f => `<span class="feature-tag">${f}</span>`).join('')}
+                        ${room.features.length > 3 ? `<span class="feature-tag">+${room.features.length - 3}</span>` : ''}
+                    </div>
+                </td>
+                <td>
+                    <span class="status-badge ${room.status === 'available' ? 'status-available' : 'status-maintenance'}">
+                        ${room.status === 'available' ? 'Available' : 'Maintenance'}
+                    </span>
+                </td>
+                <td>
+                    <div class="action-group">
+                        <button class="action-btn edit" onclick="editRoom('${room.number}')" title="Edit Room">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete" onclick="openDeleteModal('${room.number}')" title="Delete Room">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+}
+
+// Filter rooms
+function filterRooms() {
+    const floorFilter = document.getElementById('floorFilter').value;
+    const typeFilter = document.getElementById('typeFilter').value;
+    const statusFilter = document.getElementById('statusFilter').value;
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+    filteredRooms = roomsData.filter(room => {
+        // Floor filter
+        if (floorFilter !== 'all' && room.floor.toString() !== floorFilter) {
+            return false;
+        }
+
+        // Room type filter
+        if (typeFilter !== 'all' && room.type !== typeFilter) {
+            return false;
+        }
+
+        // Status filter
+        if (statusFilter !== 'all' && room.status !== statusFilter) {
+            return false;
+        }
+
+        // Search filter
+        if (searchTerm && !room.number.toLowerCase().includes(searchTerm)) {
+            return false;
+        }
+
+        return true;
+    });
+
+    displayRooms();
+    updateStats();
+}
+
+// Update statistics
+function updateStats() {
+    const totalRooms = filteredRooms.length;
+    const availableRooms = filteredRooms.filter(r => r.status === 'available').length;
+    const maintenanceRooms = filteredRooms.filter(r => r.status === 'maintenance').length;
+
+    // Calculate average price
+    const totalPrice = filteredRooms.reduce((sum, r) => sum + r.price, 0);
+    const avgPrice = totalRooms > 0 ? Math.round(totalPrice / totalRooms) : 0;
+
+    document.getElementById('totalRooms').textContent = totalRooms;
+    document.getElementById('availableRooms').textContent = availableRooms;
+    document.getElementById('maintenanceRooms').textContent = maintenanceRooms;
+    document.getElementById('avgPrice').textContent = '₹' + avgPrice.toLocaleString();
+}
+
+// Open modal to add new room
+function openAddRoomModal() {
+    // Reset form
+    document.getElementById('roomForm').reset();
+    document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Add New Room';
+    document.getElementById('saveBtn').innerHTML = '<i class="fas fa-save"></i> Save Room';
+
+    // Clear room ID
+    currentRoomId = null;
+
+    // Show modal
+    document.getElementById('roomModal').style.display = 'flex';
+}
+
+// Edit room
+function editRoom(roomNumber) {
+    const room = roomsData.find(r => r.number === roomNumber);
+    if (!room) return;
+
+    // Store current room ID
+    currentRoomId = room.number;
+
+    // Fill form with room data
+    document.getElementById('roomNumber').value = room.number;
+    document.getElementById('floor').value = room.floor;
+    document.getElementById('roomType').value = room.type;
+    document.getElementById('price').value = room.price;
+    document.getElementById('maxGuests').value = room.maxGuests;
+    document.getElementById('status').value = room.status;
+
+    // Check features
+    document.querySelectorAll('.feature-checkbox input').forEach(cb => {
+        cb.checked = room.features.includes(cb.value);
+    });
+
+    // Update modal title
+    document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Room ' + room.number;
+    document.getElementById('saveBtn').innerHTML = '<i class="fas fa-save"></i> Update Room';
+
+    // Show modal
+    document.getElementById('roomModal').style.display = 'flex';
+}
+
+// Save room (add or update)
+function saveRoom() {
+    // Get form values
+    const roomNumber = document.getElementById('roomNumber').value.trim();
+    const floor = document.getElementById('floor').value;
+    const type = document.getElementById('roomType').value;
+    const price = parseInt(document.getElementById('price').value);
+    const maxGuests = parseInt(document.getElementById('maxGuests').value);
+    const status = document.getElementById('status').value;
+
+    // Get selected features
+    const features = [];
+    document.querySelectorAll('.feature-checkbox input:checked').forEach(cb => {
+        features.push(cb.value);
+    });
+
+    // Validate
+    if (!roomNumber || !floor || !type || !price || !maxGuests) {
+        showNotification('Please fill all required fields', 'error');
+        return;
+    }
+
+    // Room type name mapping
+    const typeNames = {
+        'standard': 'Standard Room',
+        'deluxe': 'Deluxe Room',
+        'suite': 'Executive Suite',
+        'family': 'Family Suite',
+        'presidential': 'Presidential Suite'
+    };
+
+    // Check if room number already exists (for new room)
+    if (!currentRoomId) {
+        const exists = roomsData.some(r => r.number === roomNumber);
+        if (exists) {
+            showNotification('Room number already exists', 'error');
+            return;
+        }
+    }
+
+    // Create room object
+    const roomData = {
+        number: roomNumber,
+        floor: parseInt(floor),
+        type: type,
+        typeName: typeNames[type],
+        price: price,
+        maxGuests: maxGuests,
+        status: status,
+        features: features
+    };
+
+    if (currentRoomId) {
+        // Update existing room
+        const index = roomsData.findIndex(r => r.number === currentRoomId);
+        if (index !== -1) {
+            roomsData[index] = roomData;
+            showNotification(`Room ${roomNumber} updated successfully`, 'success');
+        }
+    } else {
+        // Add new room
+        roomsData.push(roomData);
+        showNotification(`Room ${roomNumber} added successfully`, 'success');
+    }
+
+    // Close modal and refresh
+    closeModal();
+    filterRooms();
+    updateStats();
+}
+
+// Open delete confirmation modal
+function openDeleteModal(roomNumber) {
+    document.getElementById('deleteRoomNumber').textContent = roomNumber;
+    currentRoomId = roomNumber;
+    document.getElementById('deleteModal').style.display = 'flex';
+}
+
+// Confirm delete
+function confirmDelete() {
+    if (currentRoomId) {
+        // Remove room from array
+        roomsData = roomsData.filter(r => r.number !== currentRoomId);
+
+        showNotification(`Room ${currentRoomId} deleted successfully`, 'success');
+
+        // Close modal and refresh
+        closeDeleteModal();
+        filterRooms();
+        updateStats();
+    }
+}
+
+// Close add/edit modal
+function closeModal() {
+    document.getElementById('roomModal').style.display = 'none';
+}
+
+// Close delete modal
+function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+    currentRoomId = null;
+}
+
+// Go back to dashboard
+function goBack() {
+    window.location.href = 'manager-dashboard.html';
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    const notificationContainer = document.getElementById('notification');
+
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+
+    let icon = 'fa-info-circle';
+    if (type === 'success') icon = 'fa-check-circle';
+    if (type === 'error') icon = 'fa-times-circle';
+
+    notification.innerHTML = `
+        <i class="fas ${icon}"></i>
+        <span>${message}</span>
+    `;
+
+    notificationContainer.appendChild(notification);
+
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 300);
+        }
+    }, 3000);
+}
+
+// Manager Dashboard JavaScript Functions
+
+// Button Functions
+function addReservation() {
+    showNotification('Add New Reservation feature will be available soon!', 'info');
+    // In the future, this will open the add reservation form
+}
+
+function viewBookings() {
+    showNotification('View Booking Details feature will be available soon!', 'info');
+    // In the future, this will show the bookings table
+}
+
+function calculateBill() {
+    showNotification('Calculate & Print Bill feature will be available soon!', 'info');
+    // In the future, this will open the bill calculator
+}
+
+// Manager specific functions
+function manageRooms() {
+    showNotification('Manage Rooms feature will be available soon!', 'info');
+    // In the future, this will open room management
+}
+
+function viewReports() {
+    showNotification('View Reports feature will be available soon!', 'info');
+    // In the future, this will show reports dashboard
+}
+
+function modifyReservations() {
+    showNotification('Modify Reservations feature will be available soon!', 'info');
+    // In the future, this will open reservation editor
+}
+
+function showHelp() {
+    const helpBox = document.getElementById('helpBox');
+    if (helpBox.style.display === 'none') {
+        helpBox.style.display = 'block';
+        showNotification('Help information displayed', 'success');
+    } else {
+        helpBox.style.display = 'none';
+    }
+}
+
+function logout() {
+    if (confirm('Are you sure you want to logout from Manager Dashboard?')) {
+        showNotification('Logging out...', 'info');
+
+        // Simulate logout delay
+        setTimeout(() => {
+            showNotification('Logged out successfully!', 'success');
+
+            // In the future, redirect to login page
+            // window.location.href = 'manager-login.html';
+
+            setTimeout(() => {
+                alert('Manager logout complete. In the final version, this will redirect to login page.');
+            }, 1000);
+        }, 1500);
+    }
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    const notificationContainer = document.getElementById('notification');
+
+    // Clear existing notifications after a delay
+    const notifications = notificationContainer.querySelectorAll('.notification');
+    if (notifications.length >= 3) {
+        notifications[0].remove();
+    }
+
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+
+    let icon = 'fa-info-circle';
+    if (type === 'success') icon = 'fa-check-circle';
+    if (type === 'warning') icon = 'fa-exclamation-triangle';
+    if (type === 'error') icon = 'fa-times-circle';
+
+    notification.innerHTML = `
+        <i class="fas ${icon}"></i>
+        <span>${message}</span>
+    `;
+
+    notificationContainer.appendChild(notification);
+
+    // Auto remove after 4 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 300);
+        }
+    }, 4000);
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Show welcome notification
+    setTimeout(() => {
+        showNotification('Welcome to Manager Dashboard! Administrative access granted.', 'success');
+    }, 500);
+
+    // Set manager info if available
+    try {
+        const userName = localStorage.getItem('managerName');
+        if (userName) {
+            // Update page if needed
+        }
+    } catch (e) {
+        console.log('Local storage not available');
+    }
+});
