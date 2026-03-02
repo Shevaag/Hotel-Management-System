@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Login | Ocean View Resort</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="manager-login-page">
+<div class="container">
+    <!-- Back Button -->
+    <a href="index.html" class="btn-back">
+        <i class="fas fa-arrow-left"></i> Back to Role Selection
+    </a>
+
+    <!-- Login Card -->
+    <div class="card slide-up">
+        <!-- Header -->
+        <div class="login-header">
+            <div class="login-icon manager">
+                <i class="fas fa-user-tie"></i>
+            </div>
+            <h1 class="login-title">Manager Login</h1>
+        </div>
+
+        <!-- Login Form -->
+        <form id="managerLoginForm">
+            <!-- Username -->
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-user-tie input-icon"></i>
+                    <input type="text" id="username" class="form-input" placeholder="Enter username" required>
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="password" class="form-input" placeholder="Enter password" required>
+                    <button type="button" id="togglePassword" class="password-toggle">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Security Code -->
+            <div class="form-group">
+                <label for="securityCode" class="form-label">Security Code </label>
+                <div class="input-with-icon">
+                    <i class="fas fa-shield-alt input-icon"></i>
+                    <input type="text" id="securityCode" class="form-input" placeholder="Enter 6-digit security code">
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-secondary">
+                <i class="fas fa-sign-in-alt"></i> Login as Manager
+            </button>
+        </form>
+
+        <!-- Security Note -->
+        <div class="security-note">
+            <div class="security-content">
+                <i class="fas fa-exclamation-triangle security-icon"></i>
+                <p class="security-text">
+                    Manager access requires additional security clearance. Unauthorized access is prohibited.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Ocean View Resort Management System</p>
+        <small>For support: it-admin@oceanviewresort.com</small>
+    </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

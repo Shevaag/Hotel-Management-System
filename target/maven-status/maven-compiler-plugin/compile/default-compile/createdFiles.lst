@@ -1,0 +1,3 @@
+com\hotel\servlet\TestMongoServlet.class
+com\hotel\servlet\HelloServlet.class
+com\hotel\config\MongoDBConnection.class

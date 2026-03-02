@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Rooms | Ocean View Resort</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="manage-rooms-page">
+<div class="container">
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-container">
+            <i class="fas fa-hotel hotel-icon"></i>
+            <h1>Ocean View Resort</h1>
+        </div>
+        <p>Manage Rooms - Manager Panel</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="card">
+        <div class="page-header">
+            <div>
+                <h2><i class="fas fa-door-open"></i> Room Management</h2>
+                <p style="color: #718096; margin-top: 5px;">Add, edit or delete rooms</p>
+            </div>
+            <div>
+                <button class="btn btn-success" onclick="openAddRoomModal()">
+                    <i class="fas fa-plus-circle"></i> Add New Room
+                </button>
+                <button class="btn back-btn" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-group">
+                <select id="floorFilter" class="filter-select" onchange="filterRooms()">
+                    <option value="all">All Floors</option>
+                    <option value="1">Floor 1</option>
+                    <option value="2">Floor 2</option>
+                    <option value="3">Floor 3</option>
+                    <option value="4">Floor 4</option>
+                    <option value="5">Floor 5</option>
+                </select>
+
+                <select id="typeFilter" class="filter-select" onchange="filterRooms()">
+                    <option value="all">All Room Types</option>
+                    <option value="standard">Standard</option>
+                    <option value="deluxe">Deluxe</option>
+                    <option value="suite">Executive Suite</option>
+                    <option value="family">Family Suite</option>
+                    <option value="presidential">Presidential Suite</option>
+                </select>
+
+                <select id="statusFilter" class="filter-select" onchange="filterRooms()">
+                    <option value="all">All Status</option>
+                    <option value="available">Available</option>
+                    <option value="maintenance">Under Maintenance</option>
+                </select>
+
+                <div class="search-box-small">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search room number..." onkeyup="filterRooms()">
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Summary -->
+        <div class="room-summary">
+            <div class="summary-card">
+                <div class="summary-icon blue">
+                    <i class="fas fa-door-open"></i>
+                </div>
+                <div class="summary-details">
+                    <span class="summary-label">Total Rooms</span>
+                    <span class="summary-number" id="totalRooms">0</span>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon green">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="summary-details">
+                    <span class="summary-label">Available</span>
+                    <span class="summary-number" id="availableRooms">0</span>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon orange">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="summary-details">
+                    <span class="summary-label">Maintenance</span>
+                    <span class="summary-number" id="maintenanceRooms">0</span>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon purple">
+                    <i class="fas fa-rupee-sign"></i>
+                </div>
+                <div class="summary-details">
+                    <span class="summary-label">Avg. Price</span>
+                    <span class="summary-number" id="avgPrice">₹0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rooms Table -->
+        <div class="rooms-table-container">
+            <table class="rooms-table">
+                <thead>
+                <tr>
+                    <th>Room No</th>
+                    <th>Floor</th>
+                    <th>Room Type</th>
+                    <th>Price/Night</th>
+                    <th>Max Guests</th>
+                    <th>Features</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="roomsTableBody">
+                <!-- Rooms will be loaded here -->
+                </tbody>
+            </table>
+
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <i class="fas fa-door-closed"></i>
+                <h3>No rooms found</h3>
+                <p>Click "Add New Room" to create your first room</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2026 Ocean View Resort | Manager Panel</p>
+    </footer>
+</div>
+
+<!-- Add/Edit Room Modal -->
+<div id="roomModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle"><i class="fas fa-plus-circle"></i> Add New Room</h3>
+            <button class="modal-close" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="roomForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-hashtag"></i> Room Number *</label>
+                        <input type="text" id="roomNumber" class="form-control" placeholder="e.g., 101" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-layer-group"></i> Floor *</label>
+                        <select id="floor" class="form-control" required>
+                            <option value="">Select Floor</option>
+                            <option value="1">Floor 1</option>
+                            <option value="2">Floor 2</option>
+                            <option value="3">Floor 3</option>
+                            <option value="4">Floor 4</option>
+                            <option value="5">Floor 5</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-door-open"></i> Room Type *</label>
+                        <select id="roomType" class="form-control" required>
+                            <option value="">Select Room Type</option>
+                            <option value="standard">Standard Room</option>
+                            <option value="deluxe">Deluxe Room</option>
+                            <option value="suite">Executive Suite</option>
+                            <option value="family">Family Suite</option>
+                            <option value="presidential">Presidential Suite</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-rupee-sign"></i> Price per Night *</label>
+                        <input type="number" id="price" class="form-control" placeholder="e.g., 3000" min="0" step="100" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-users"></i> Max Guests *</label>
+                        <input type="number" id="maxGuests" class="form-control" placeholder="e.g., 2" min="1" max="10" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-tag"></i> Status</label>
+                        <select id="status" class="form-control">
+                            <option value="available">Available</option>
+                            <option value="maintenance">Under Maintenance</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-list"></i> Features</label>
+                    <div class="features-grid">
+                        <label class="feature-checkbox">
+                            <input type="checkbox" value="WiFi"> WiFi
+                        </label>
+                        <label class="feature-checkbox">
+                            <input type="checkbox" value="TV"> TV
+                        </label>
+                        <label class="feature-checkbox">
+                            <input type="checkbox" value="AC"> AC
+                        </label>
+                        <label class="feature-checkbox">
+                            <input type="checkbox" value="Mini Bar"> Mini Bar
+                        </label>
+                        <label class="feature-checkbox">
+                            <input type="checkbox" value="Balcony"> Balcony
+                        </label>
+                        <label class="feature-checkbox">
+                            <input type="checkbox" value="Living Area"> Living Area
+                        </label>
+                        <label class="feature-checkbox">
+                            <input type="checkbox" value="Kitchenette"> Kitchenette
+                        </label>
+                        <label class="feature-checkbox">
+                            <input type="checkbox" value="Jacuzzi"> Jacuzzi
+                        </label>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-success" onclick="saveRoom()" id="saveBtn">
+                <i class="fas fa-save"></i> Save Room
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-header">
+            <h3><i class="fas fa-exclamation-triangle" style="color: #e53e3e;"></i> Confirm Delete</h3>
+            <button class="modal-close" onclick="closeDeleteModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p style="text-align: center; margin-bottom: 20px;">
+                Are you sure you want to delete Room <strong id="deleteRoomNumber"></strong>?
+            </p>
+            <p style="text-align: center; color: #e53e3e; font-size: 14px;">
+                This action cannot be undone.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+            <button class="btn btn-danger" onclick="confirmDelete()">
+                <i class="fas fa-trash"></i> Delete Room
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Notification Container -->
+<div id="notification"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

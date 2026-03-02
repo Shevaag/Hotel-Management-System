@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receptionist Login | Ocean View Resort</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="receptionist-login-page">
+<div class="container">
+    <!-- Back Button -->
+    <a href="index.html" class="btn-back">
+        <i class="fas fa-arrow-left"></i> Back to Role Selection
+    </a>
+
+    <!-- Login Card -->
+    <div class="card slide-up">
+        <!-- Header -->
+        <div class="login-header">
+            <div class="login-icon receptionist">
+                <i class="fas fa-concierge-bell"></i>
+            </div>
+            <h1 class="login-title">Receptionist Login</h1>
+        </div>
+
+        <!-- Login Form -->
+        <form id="receptionistLoginForm">
+            <!-- Username -->
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="username" class="form-input" placeholder="Enter username" required>
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="password" class="form-input" placeholder="Enter password" required>
+                    <button type="button" id="togglePassword" class="password-toggle">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="forgot-password">
+                    <a href="#">Forgot password?</a>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> Login as Receptionist
+            </button>
+        </form>
+
+        <!-- Help -->
+        <div class="help-links mt-4">
+            <a href="#" class="help-link">
+                <i class="fas fa-question-circle"></i> Need help logging in?
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Ocean View Resort Reception System</p>
+        <small>For support: support@oceanviewresort.com</small>
+    </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

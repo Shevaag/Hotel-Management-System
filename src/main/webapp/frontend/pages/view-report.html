@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Reports | Ocean View Resort</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="view-reports-page">
+<div class="container">
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-container">
+            <i class="fas fa-hotel hotel-icon"></i>
+            <h1>Ocean View Resort</h1>
+        </div>
+        <p>Reports & Analytics - Manager Panel</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="card">
+        <div class="page-header">
+            <div>
+                <h2><i class="fas fa-chart-bar"></i> Reports Dashboard</h2>
+                <p style="color: #718096; margin-top: 5px;">View revenue, occupancy, and booking analytics</p>
+            </div>
+            <div>
+                <button class="btn btn-secondary" onclick="exportReports()">
+                    <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary" onclick="printReports()">
+                    <i class="fas fa-print"></i> Print
+                </button>
+                <button class="btn back-btn" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+        </div>
+
+        <!-- Date Range Filter -->
+        <div class="date-filter-section">
+            <div class="date-range">
+                <div class="date-group">
+                    <label><i class="fas fa-calendar-alt"></i> From:</label>
+                    <input type="date" id="startDate" class="date-input" value="2026-02-01">
+                </div>
+                <div class="date-group">
+                    <label><i class="fas fa-calendar-alt"></i> To:</label>
+                    <input type="date" id="endDate" class="date-input" value="2026-02-28">
+                </div>
+                <button class="btn btn-primary" onclick="applyDateFilter()">
+                    <i class="fas fa-filter"></i> Apply
+                </button>
+            </div>
+            <div class="quick-filters">
+                <button class="quick-filter" onclick="setDateRange('today')">Today</button>
+                <button class="quick-filter" onclick="setDateRange('week')">This Week</button>
+                <button class="quick-filter" onclick="setDateRange('month')">This Month</button>
+                <button class="quick-filter" onclick="setDateRange('quarter')">This Quarter</button>
+                <button class="quick-filter" onclick="setDateRange('year')">This Year</button>
+            </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-icon purple">
+                    <i class="fas fa-rupee-sign"></i>
+                </div>
+                <div class="kpi-content">
+                    <span class="kpi-label">Total Revenue</span>
+                    <span class="kpi-value" id="totalRevenue">12,45,678</span>
+                    <span class="kpi-trend positive">
+                        <i class="fas fa-arrow-up"></i> +12.5%
+                    </span>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon blue">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="kpi-content">
+                    <span class="kpi-label">Total Bookings</span>
+                    <span class="kpi-value" id="totalBookings">156</span>
+                    <span class="kpi-trend positive">
+                        <i class="fas fa-arrow-up"></i> +8.3%
+                    </span>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon green">
+                    <i class="fas fa-door-open"></i>
+                </div>
+                <div class="kpi-content">
+                    <span class="kpi-label">Occupancy Rate</span>
+                    <span class="kpi-value" id="occupancyRate">78.5%</span>
+                    <span class="kpi-trend positive">
+                        <i class="fas fa-arrow-up"></i> +5.2%
+                    </span>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon orange">
+                    <i class="fas fa-user-friends"></i>
+                </div>
+                <div class="kpi-content">
+                    <span class="kpi-label">Avg. Daily Rate</span>
+                    <span class="kpi-value" id="avgDailyRate">4,850</span>
+                    <span class="kpi-trend negative">
+                        <i class="fas fa-arrow-down"></i> -2.1%
+                    </span>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon yellow">
+                    <i class="fas fa-bed"></i>
+                </div>
+                <div class="kpi-content">
+                    <span class="kpi-label">Rooms Sold</span>
+                    <span class="kpi-value" id="roomsSold">845</span>
+                    <span class="kpi-trend positive">
+                        <i class="fas fa-arrow-up"></i> +10.2%
+                    </span>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon red">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="kpi-content">
+                    <span class="kpi-label">Cancellations</span>
+                    <span class="kpi-value" id="cancellations">12</span>
+                    <span class="kpi-trend negative">
+                        <i class="fas fa-arrow-down"></i> -3.5%
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="charts-row">
+            <!-- Revenue Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-chart-line"></i> Revenue Trend</h3>
+                    <select class="chart-filter">
+                        <option>Daily</option>
+                        <option selected>Weekly</option>
+                        <option>Monthly</option>
+                    </select>
+                </div>
+                <div class="chart-container" id="revenueChart">
+                    <!-- Chart bars will be generated by JS -->
+                    <div class="chart-placeholder">
+                        <div class="bar" style="height: 60px;"></div>
+                        <div class="bar" style="height: 85px;"></div>
+                        <div class="bar" style="height: 45px;"></div>
+                        <div class="bar" style="height: 70px;"></div>
+                        <div class="bar" style="height: 95px;"></div>
+                        <div class="bar" style="height: 55px;"></div>
+                        <div class="bar" style="height: 80px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Occupancy Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-chart-pie"></i> Occupancy by Room Type</h3>
+                </div>
+                <div class="pie-chart-container">
+                    <div class="pie-chart-placeholder">
+                        <div class="pie-segment" style="--percentage: 40; --color: #3182ce;"></div>
+                        <div class="pie-segment" style="--percentage: 25; --color: #38a169;"></div>
+                        <div class="pie-segment" style="--percentage: 20; --color: #d69e2e;"></div>
+                        <div class="pie-segment" style="--percentage: 15; --color: #805ad5;"></div>
+                    </div>
+                    <div class="pie-legend">
+                        <div class="legend-item">
+                            <span class="legend-color" style="background: #3182ce;"></span>
+                            <span>Standard (40%)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background: #38a169;"></span>
+                            <span>Deluxe (25%)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background: #d69e2e;"></span>
+                            <span>Suite (20%)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background: #805ad5;"></span>
+                            <span>Presidential (15%)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue by Room Type -->
+        <div class="revenue-table-section">
+            <h3><i class="fas fa-table"></i> Revenue by Room Type</h3>
+            <div class="table-container">
+                <table class="revenue-table">
+                    <thead>
+                    <tr>
+                        <th>Room Type</th>
+                        <th>Rooms Sold</th>
+                        <th>Revenue</th>
+                        <th>Avg. Rate</th>
+                        <th>Occupancy %</th>
+                        <th>Trend</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Standard Room</td>
+                        <td>320</td>
+                        <td>9,60,000</td>
+                        <td>3,000</td>
+                        <td>82%</td>
+                        <td><span class="trend-badge positive"><i class="fas fa-arrow-up"></i> +5%</span></td>
+                    </tr>
+                    <tr>
+                        <td>Deluxe Room</td>
+                        <td>245</td>
+                        <td>12,25,000</td>
+                        <td>5,000</td>
+                        <td>76%</td>
+                        <td><span class="trend-badge positive"><i class="fas fa-arrow-up"></i> +3%</span></td>
+                    </tr>
+                    <tr>
+                        <td>Executive Suite</td>
+                        <td>120</td>
+                        <td>9,60,000</td>
+                        <td>8,000</td>
+                        <td>68%</td>
+                        <td><span class="trend-badge negative"><i class="fas fa-arrow-down"></i> -2%</span></td>
+                    </tr>
+                    <tr>
+                        <td>Family Suite</td>
+                        <td>95</td>
+                        <td>9,50,000</td>
+                        <td>10,000</td>
+                        <td>71%</td>
+                        <td><span class="trend-badge positive"><i class="fas fa-arrow-up"></i> +8%</span></td>
+                    </tr>
+                    <tr>
+                        <td>Presidential Suite</td>
+                        <td>45</td>
+                        <td>6,75,000</td>
+                        <td>15,000</td>
+                        <td>55%</td>
+                        <td><span class="trend-badge neutral"><i class="fas fa-minus"></i> 0%</span></td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th>Total</th>
+                        <th>825</th>
+                        <th>47,70,000</th>
+                        <th>6,850</th>
+                        <th>78.5%</th>
+                        <th></th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <!-- Daily Bookings Table -->
+        <div class="daily-bookings-section">
+            <h3><i class="fas fa-calendar-day"></i> Daily Bookings (Last 7 Days)</h3>
+            <div class="table-container">
+                <table class="daily-table">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Bookings</th>
+                        <th>Check-ins</th>
+                        <th>Check-outs</th>
+                        <th>Revenue</th>
+                        <th>Occupancy</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>15 Feb 2026</td>
+                        <td>12</td>
+                        <td>8</td>
+                        <td>6</td>
+                        <td>45,000</td>
+                        <td>72%</td>
+                    </tr>
+                    <tr>
+                        <td>14 Feb 2026</td>
+                        <td>15</td>
+                        <td>10</td>
+                        <td>7</td>
+                        <td>52,000</td>
+                        <td>78%</td>
+                    </tr>
+                    <tr>
+                        <td>13 Feb 2026</td>
+                        <td>10</td>
+                        <td>7</td>
+                        <td>5</td>
+                        <td>38,000</td>
+                        <td>65%</td>
+                    </tr>
+                    <tr>
+                        <td>12 Feb 2026</td>
+                        <td>14</td>
+                        <td>9</td>
+                        <td>8</td>
+                        <td>48,000</td>
+                        <td>75%</td>
+                    </tr>
+                    <tr>
+                        <td>11 Feb 2026</td>
+                        <td>16</td>
+                        <td>11</td>
+                        <td>9</td>
+                        <td>55,000</td>
+                        <td>82%</td>
+                    </tr>
+                    <tr>
+                        <td>10 Feb 2026</td>
+                        <td>11</td>
+                        <td>8</td>
+                        <td>6</td>
+                        <td>42,000</td>
+                        <td>70%</td>
+                    </tr>
+                    <tr>
+                        <td>09 Feb 2026</td>
+                        <td>9</td>
+                        <td>6</td>
+                        <td>4</td>
+                        <td>35,000</td>
+                        <td>62%</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2026 Ocean View Resort | Manager Reports</p>
+    </footer>
+</div>
+
+<!-- Notification Container -->
+<div id="notification"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
