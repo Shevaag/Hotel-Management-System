@@ -8,7 +8,11 @@ public class MongoDBConnection {
     private static MongoClient client;
 
     private static final String URI = "mongodb://localhost:27017";
+
     private static final String DB_NAME = "hotel_reservation"; // your DB name
+
+    private static final String DB_NAME = "hotel_reservation";
+
 
     public static MongoDatabase db() {
         if (client == null) {
