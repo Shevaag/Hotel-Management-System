@@ -1,4 +1,4 @@
-package com.hotel.servlet;
+package com.hotel.servlet; //handles all operations for the /api/reservations endpoint
 
 import com.hotel.repo.ReservationRepository;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 @WebServlet("/api/reservations")
 public class ReservationsServlet extends HttpServlet {
 
-    private final ReservationRepository repo = new ReservationRepository();
+    private final ReservationRepository repo = new ReservationRepository(); //Creates a connection to the reservation repository for database operations
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException { //handles GET requests to retrieve all reservations
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
@@ -29,7 +29,7 @@ public class ReservationsServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException { //handles POST requests to create a new reservation
 
         String reservationNo = req.getParameter("reservationNo");
         String guestName = req.getParameter("guestName");

@@ -1,5 +1,5 @@
 /* ========================================
-   GLOBAL STYLES (Shared across all pages) - ONLY ONCE!
+   GLOBAL STYLES (Shared across all pages)
    ======================================== */
 * {
     margin: 0;
@@ -260,7 +260,7 @@ body {
 }
 
 /* ========================================
-   PAGE: INDEX.HTML (Role Selection)
+   PAGE: INDEX.HTML
    ======================================== */
 body.index-page {
     background: linear-gradient(135deg, #e3f2fd 0%, #f3f4f6 100%);

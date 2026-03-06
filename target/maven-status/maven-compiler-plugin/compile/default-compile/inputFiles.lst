@@ -1,3 +1,14 @@
 D:\IJ Projects\HotelReservationSystem\src\main\java\com\hotel\config\MongoDBConnection.java
+D:\IJ Projects\HotelReservationSystem\src\main\java\com\hotel\repo\ReservationRepository.java
+D:\IJ Projects\HotelReservationSystem\src\main\java\com\hotel\repo\RoomTypeRepository.java
+D:\IJ Projects\HotelReservationSystem\src\main\java\com\hotel\repo\UserRepository.java
+D:\IJ Projects\HotelReservationSystem\src\main\java\com\hotel\servlet\DeleteReservationServlet.java
 D:\IJ Projects\HotelReservationSystem\src\main\java\com\hotel\servlet\HelloServlet.java
+D:\IJ Projects\HotelReservationSystem\src\main\java\com\hotel\servlet\LoginServlet.java
+D:\IJ Projects\HotelReservationSystem\src\main\java\com\hotel\servlet\ReservationByNoServlet.java
+D:\IJ Projects\HotelReservationSystem\src\main\java\com\hotel\servlet\ReservationsServlet.java
+D:\IJ Projects\HotelReservationSystem\src\main\java\com\hotel\servlet\RoomTypeByTypeServlet.java
+D:\IJ Projects\HotelReservationSystem\src\main\java\com\hotel\servlet\RoomTypeRoomsServlet.java
+D:\IJ Projects\HotelReservationSystem\src\main\java\com\hotel\servlet\RoomTypesServlet.java
+D:\IJ Projects\HotelReservationSystem\src\main\java\com\hotel\servlet\RoomTypeUpdateServlet.java
 D:\IJ Projects\HotelReservationSystem\src\main\java\com\hotel\servlet\TestMongoServlet.java

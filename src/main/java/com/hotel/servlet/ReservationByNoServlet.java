@@ -1,4 +1,4 @@
-package com.hotel.servlet;
+package com.hotel.servlet; // handles GET requests to fetch a specific reservation by its reservation number
 
 import com.hotel.repo.ReservationRepository;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,10 +12,10 @@ import java.io.IOException;
 @WebServlet("/api/reservations/*")
 public class ReservationByNoServlet extends HttpServlet {
 
-    private final ReservationRepository repo = new ReservationRepository();
+    private final ReservationRepository repo = new ReservationRepository(); //Creates a connection to the reservation repository to fetch reservation data from the database
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException { //handles GET requests to retrieve a specific reservation
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 

@@ -1,4 +1,4 @@
-package com.hotel.servlet;
+package com.hotel.servlet; //handles POST requests to manage which room numbers belong to which room type
 
 import com.hotel.repo.RoomTypeRepository;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,10 +11,10 @@ import java.io.IOException;
 @WebServlet("/api/room-types/rooms")
 public class RoomTypeRoomsServlet extends HttpServlet {
 
-    private final RoomTypeRepository repo = new RoomTypeRepository();
+    private final RoomTypeRepository repo = new RoomTypeRepository(); //Creates a connection to the room type repository for database operations
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException { //handles POST requests to add or remove rooms from a room type
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 

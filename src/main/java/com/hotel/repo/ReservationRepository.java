@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.mongodb.client.result.DeleteResult;
 
-import java.time.Instant;
+import java.time.Instant; //current timestamp
 
 public class ReservationRepository {
 
@@ -19,12 +19,12 @@ public class ReservationRepository {
         return reservations.find(Filters.eq("reservationNo", reservationNo)).first() != null;
     }
 
-    public void insert(Document doc) {
+    public void insert(Document doc) { //insert a new reservation
         doc.append("createdAt", Instant.now().toString());
         reservations.insertOne(doc);
     }
 
-    public List<Document> findAll() {
+    public List<Document> findAll() { //returns all reservation as lists
         List<Document> list = new ArrayList<>();
         reservations.find().sort(new Document("bookingDate", -1)).into(list); // newest first
         return list;

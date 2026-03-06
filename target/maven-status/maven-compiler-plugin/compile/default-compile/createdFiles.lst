@@ -1,3 +1,14 @@
+com\hotel\servlet\ReservationsServlet.class
+com\hotel\servlet\RoomTypeByTypeServlet.class
+com\hotel\repo\ReservationRepository.class
+com\hotel\servlet\LoginServlet.class
+com\hotel\repo\RoomTypeRepository.class
+com\hotel\servlet\RoomTypeRoomsServlet.class
+com\hotel\servlet\DeleteReservationServlet.class
 com\hotel\servlet\TestMongoServlet.class
+com\hotel\repo\UserRepository.class
+com\hotel\servlet\RoomTypeUpdateServlet.class
+com\hotel\servlet\ReservationByNoServlet.class
 com\hotel\servlet\HelloServlet.class
+com\hotel\servlet\RoomTypesServlet.class
 com\hotel\config\MongoDBConnection.class

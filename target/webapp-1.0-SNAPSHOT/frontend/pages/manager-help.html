@@ -2,9 +2,134 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Help | Ocean View Resort</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
-<body>
-Help section for Manager
+<body class="help-page">
+<div class="container">
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-icon">
+            <i class="fas fa-question-circle hotel-icon"></i>
+            <h1>Ocean View Resort</h1>
+        </div>
+        <p>Manager Help Guide</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="card">
+        <div class="page-header">
+            <h2><i class="fas fa-book"></i> How to Use the Manager System</h2>
+            <button class="btn back-btn" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+        </div>
+
+        <div class="help-section">
+            <h3><i class="fas fa-sign-in-alt"></i> 1. Login to the System</h3>
+            <p>To access the manager dashboard:</p>
+            <ol>
+                <li>Open the manager login page.</li>
+                <li>Enter your username and password.</li>
+                <li>Enter the manager security code.</li>
+                <li>Click <strong>Login</strong>.</li>
+            </ol>
+        </div>
+
+        <div class="help-section">
+            <h3><i class="fas fa-calendar-plus"></i> 2. Add New Reservation</h3>
+            <p>The manager can also create reservations just like the receptionist.</p>
+            <ol>
+                <li>Open the <strong>Add New Reservation</strong> page.</li>
+                <li>Enter guest details such as name, address, phone number, and email.</li>
+                <li>Select a room type.</li>
+                <li>Select check-in and check-out dates.</li>
+                <li>Choose an available room number.</li>
+                <li>Enter the number of adults and children.</li>
+                <li>Click <strong>Save Reservation</strong>.</li>
+            </ol>
+            <p>The system automatically checks room availability and prevents double booking.</p>
+        </div>
+
+        <div class="help-section">
+            <h3><i class="fas fa-door-open"></i> 3. View Booking Details</h3>
+            <p>This section allows the manager to check all room statuses.</p>
+            <ol>
+                <li>Open the <strong>View Booking Details</strong> page.</li>
+                <li>Use filters to search by room type, room status, or room number.</li>
+                <li>Booked rooms display guest details.</li>
+                <li>Available rooms are marked clearly.</li>
+            </ol>
+        </div>
+
+        <div class="help-section">
+            <h3><i class="fas fa-file-invoice"></i> 4. Calculate and Print Bill</h3>
+            <ol>
+                <li>Open the <strong>Calculate & Print Bill</strong> page.</li>
+                <li>Enter the reservation number.</li>
+                <li>Click <strong>Get Details</strong>.</li>
+                <li>The system calculates total nights, room charges, tax, and total amount.</li>
+                <li>Click <strong>Print Bill</strong> to print the invoice.</li>
+            </ol>
+        </div>
+
+        <div class="help-section">
+            <h3><i class="fas fa-sign-out-alt"></i> 5. Checkout Guest</h3>
+            <ol>
+                <li>After generating the bill, click <strong>Checkout</strong>.</li>
+                <li>The reservation will be removed from the database.</li>
+                <li>The room will become available again for new bookings.</li>
+            </ol>
+        </div>
+
+        <div class="help-section">
+            <h3><i class="fas fa-bed"></i> 6. Manage Rooms</h3>
+            <p>The manager can manage room types and room numbers.</p>
+            <ol>
+                <li>Open the <strong>Manage Rooms</strong> page.</li>
+                <li>View all room types and their details.</li>
+                <li>Edit room type information such as price, max adults, max children, and features.</li>
+                <li>Add new room numbers to a room type.</li>
+                <li>Remove room numbers from a room type if needed.</li>
+            </ol>
+        </div>
+
+        <div class="help-section">
+            <h3><i class="fas fa-edit"></i> 7. Modify Reservations</h3>
+            <ol>
+                <li>Open the <strong>Modify Reservations</strong> page.</li>
+                <li>Search reservations using reservation number, guest name, phone, or room number.</li>
+                <li>View reservation details in the table.</li>
+                <li>If needed, delete a reservation from the system.</li>
+            </ol>
+        </div>
+
+        <div class="help-section">
+            <h3><i class="fas fa-chart-bar"></i> 8. View Reports</h3>
+            <ol>
+                <li>Open the <strong>View Reports</strong> page.</li>
+                <li>Select a start date and end date.</li>
+                <li>Apply the date filter to view report data.</li>
+                <li>Use reports to monitor reservation activity and hotel performance.</li>
+            </ol>
+        </div>
+
+        <div class="help-section">
+            <h3><i class="fas fa-sign-out-alt"></i> 9. Logout</h3>
+            <ol>
+                <li>Click the <strong>Logout</strong> button from the dashboard.</li>
+                <li>The system will end the session and redirect to the login page.</li>
+            </ol>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2026 Ocean View Resort | Manager Help Guide</p>
+    </footer>
+</div>
 </body>
 </html>

@@ -1,4 +1,4 @@
-package com.hotel.repo;
+package com.hotel.repo; //handles user authentication
 
 import com.hotel.config.MongoDBConnection;
 import com.mongodb.client.MongoCollection;

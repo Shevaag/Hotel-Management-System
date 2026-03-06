@@ -9,8 +9,6 @@ public class MongoDBConnection {
 
     private static final String URI = "mongodb://localhost:27017";
 
-    private static final String DB_NAME = "hotel_reservation"; // your DB name
-
     private static final String DB_NAME = "hotel_reservation";
 
 

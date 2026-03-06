@@ -1,4 +1,4 @@
-package com.hotel.servlet;
+package com.hotel.servlet; //handles user login requests
 
 import com.hotel.repo.UserRepository;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,16 +13,16 @@ import java.io.IOException;
 @WebServlet("/api/login")
 public class LoginServlet extends HttpServlet {
 
-    private final UserRepository repo = new UserRepository();
+    private final UserRepository repo = new UserRepository(); //Creates a connection to the user repository to check credentials in the database
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException { //processes login form submissions.
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         String role = req.getParameter("role");
         String securityCode = req.getParameter("securityCode"); // only manager
 
-        // ✅ DEBUG 1: what backend receives
+        // DEBUG 1
         System.out.println("LOGIN => username=" + username + ", password=" + password + ", role=" + role + ", securityCode=" + securityCode);
 
         resp.setContentType("application/json");
@@ -37,7 +37,7 @@ public class LoginServlet extends HttpServlet {
         role = role.trim().toUpperCase();
         Document user = repo.findByUsernamePasswordRole(username.trim(), password, role);
 
-        // ✅ DEBUG 2: did MongoDB find a matching user?
+        // DEBUG 2
         System.out.println("USER FOUND? " + (user != null));
 
         if (user == null) {

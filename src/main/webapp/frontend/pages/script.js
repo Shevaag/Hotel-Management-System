@@ -7,7 +7,7 @@ function togglePasswordVisibility(inputId, toggleBtnId) {
   const passwordInput = document.getElementById(inputId);
   const toggleBtn = document.getElementById(toggleBtnId);
 
-  if (passwordInput && toggleBtn) {
+  if (passwordInput && toggleBtn) { //if both exists
     toggleBtn.addEventListener("click", function () {
       const type = passwordInput.type === "password" ? "text" : "password";
       passwordInput.type = type;
@@ -21,7 +21,7 @@ function togglePasswordVisibility(inputId, toggleBtnId) {
   }
 }
 
-// Global notification function (SINGLE VERSION)
+// Global notification function - small popup
 function showNotification(message, type = "info") {
   const notificationContainer = document.getElementById("notification");
 
@@ -43,6 +43,7 @@ function showNotification(message, type = "info") {
   const notification = document.createElement("div");
   notification.className = `notification ${type}`;
 
+// select icon based on msg type
   let icon = "fa-info-circle";
   if (type === "success") icon = "fa-check-circle";
   if (type === "error") icon = "fa-times-circle";
@@ -75,7 +76,7 @@ function showNotification(message, type = "info") {
 }
 
 // Format date helper
-function formatDate(dateString) {
+function formatDate(dateString) { //converts date
   if (!dateString) return "-";
   const options = { day: "2-digit", month: "short", year: "numeric" };
   return new Date(dateString).toLocaleDateString("en-IN", options);
@@ -94,8 +95,8 @@ function calculateNights(checkinDate, checkoutDate) {
   const checkin = new Date(checkinDate);
   const checkout = new Date(checkoutDate);
   const diffTime = checkout - checkin;
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return diffDays > 0 ? diffDays : 0;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); //to millisecond
+  return diffDays > 0 ? diffDays : 0; //returns only positive nights
 }
 
 // Get room price by type (fallback if DB not found)
@@ -110,12 +111,12 @@ function getRoomPrice(roomType) {
   return prices[roomType] || 0;
 }
 
-// Helper: get Tomcat app base path (e.g., /webapp-1.0-SNAPSHOT)
+// gets the base path of tomcat application
 function getAppBasePath() {
   return "/" + window.location.pathname.split("/")[1];
 }
 
-// Go back function (handles different dashboards)
+// Go back function
 function goBack() {
   const role = localStorage.getItem("userRole") || sessionStorage.getItem("userRole");
 
@@ -128,7 +129,7 @@ function goBack() {
   }
 }
 
-// Safe text setter (used in multiple pages)
+// safely updates text inside an element
 function setElementText(id, text) {
   const el = document.getElementById(id);
   if (el) el.textContent = text;
@@ -158,10 +159,10 @@ if (!document.querySelector("#notification-animation")) {
 // ========================================
 
 document.addEventListener("DOMContentLoaded", function () {
-  const path = window.location.pathname;
+  const path = window.location.pathname; //detects which page is currently open.
   const filename = path.substring(path.lastIndexOf("/") + 1);
 
-  // Import Font Awesome if not already present
+  // Import Font Awesome
   if (!document.querySelector('link[href*="font-awesome"]')) {
     const faLink = document.createElement("link");
     faLink.rel = "stylesheet";
@@ -205,7 +206,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // PAGE: INDEX.HTML (Role Selection)
 // ========================================
 
-function initRoleSelection() {
+function initRoleSelection() { //initializes the role selection page
   const roleCards = document.querySelectorAll(".role-card");
 
   roleCards.forEach((card) => {
@@ -217,7 +218,7 @@ function initRoleSelection() {
 
       setTimeout(() => {
         window.location.href = href;
-      }, 500);
+      }, 500); //0.5s
     });
   });
 }
@@ -230,14 +231,15 @@ function initReceptionistLogin() {
   togglePasswordVisibility("password", "togglePassword");
 
   const form = document.getElementById("receptionistLoginForm");
-  if (!form) return;
+  if (!form) return; //It finds the login form in the HTML page.
 
-  form.addEventListener("submit", async function (e) {
-    e.preventDefault();
+  form.addEventListener("submit", async function (e) { //When click Login, runs this code.
+    e.preventDefault(); //prevents page reload
 
     const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value;
 
+    //validate inputs
     if (!username) {
       showNotification("Please enter username", "error");
       return;
@@ -247,26 +249,27 @@ function initReceptionistLogin() {
       return;
     }
 
-    const submitBtn = this.querySelector('button[type="submit"]');
+    const submitBtn = this.querySelector('button[type="submit"]'); //loading indicator
     const originalText = submitBtn.innerHTML;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
     submitBtn.disabled = true;
 
     try {
-      const base = getAppBasePath();
+      const base = getAppBasePath(); //get tomcat application path
 
       const params = new URLSearchParams();
       params.append("username", username);
       params.append("password", password);
       params.append("role", "RECEPTIONIST");
 
+        //send login req to backend
       const res = await fetch(base + "/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: params.toString(),
       });
 
-      const data = await res.json().catch(() => ({ success: false, message: "Bad server response" }));
+      const data = await res.json().catch(() => ({ success: false, message: "Bad server response" })); //convert response to JSon
 
       if (res.ok && data.success) {
         showNotification("Login successful! Redirecting...", "success");
@@ -376,7 +379,7 @@ function initReceptionistDashboard() {
   }, 500);
 
   try {
-    const userName = localStorage.getItem("userName");
+    const userName = localStorage.getItem("userName"); //retrieves username
     if (userName) {
       const userElement = document.querySelector(".user-details h3");
       if (userElement) {
@@ -388,6 +391,7 @@ function initReceptionistDashboard() {
   }
 }
 
+//navigations
 function addReservation() {
   window.location.href = "add-new-reservation.html";
 }
@@ -474,12 +478,12 @@ async function saveReservation(event) {
   const specialRequests = document.getElementById("specialRequests")?.value || "";
 
   if (!guestName || !address || !phone || !email || !roomType || !roomNumber || !checkinDate || !checkoutDate) {
-    showNotification("Please fill all required fields", "error");
+    showNotification("Please fill all required fields", "error"); //checks if all req fields are filled
     return;
   }
 
-  const nights = calculateNights(checkinDate, checkoutDate);
-  if (nights <= 0) {
+  const nights = calculateNights(checkinDate, checkoutDate); //calculate nights
+  if (nights <= 0) { //checks
     showNotification("Check-out date must be after check-in date", "error");
     return;
   }
@@ -492,7 +496,7 @@ async function saveReservation(event) {
   try {
     const base = getAppBasePath();
 
-    const params = new URLSearchParams();
+    const params = new URLSearchParams(); //creates form style data
     params.append("reservationNo", reservationNo);
     params.append("guestName", guestName);
     params.append("address", address);
@@ -506,7 +510,7 @@ async function saveReservation(event) {
     params.append("children", children);
     params.append("specialRequests", specialRequests);
 
-    const res = await fetch(base + "/api/reservations", {
+    const res = await fetch(base + "/api/reservations", { //send reservation to backend
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: params.toString(),
@@ -516,7 +520,7 @@ async function saveReservation(event) {
 
     if (res.ok && data.success) {
       try {
-        await loadReservationsFromDB();
+        await loadReservationsFromDB(); //refresh room availability system
         updateRoomNumbersFromDB();
       } catch (e) {
         console.warn("Could not refresh reservations after save:", e);
@@ -541,10 +545,10 @@ async function saveReservation(event) {
 // PAGE: VIEW-BOOKING-DETAILS.HTML (DB)
 // ========================================
 
-let roomsData = [];
+let roomsData = []; //stores info from room-types collections
 let bookingsData = [];
 
-async function initViewBookings() {
+async function initViewBookings() { //loads data from db and render the room list
   try {
     await loadRoomsFromDB();
     await loadBookingsFromDB();
@@ -562,7 +566,7 @@ async function initViewBookings() {
   }
 }
 
-async function loadRoomsFromDB() {
+async function loadRoomsFromDB() { //gets room type data from the backend and converts it into individual room records
   const base = getAppBasePath();
   const res = await fetch(base + "/api/room-types");
   if (!res.ok) throw new Error("room-types HTTP " + res.status);
@@ -582,7 +586,7 @@ async function loadRoomsFromDB() {
   roomsData = rooms;
 }
 
-async function loadBookingsFromDB() {
+async function loadBookingsFromDB() { //loads all reservations from the backend and converts them into a simpler structure for room display.
   const base = getAppBasePath();
   const res = await fetch(base + "/api/reservations");
   if (!res.ok) throw new Error("reservations HTTP " + res.status);
@@ -604,7 +608,7 @@ async function loadBookingsFromDB() {
     }));
 }
 
-function displayRooms() {
+function displayRooms() { //displays rooms
   const roomList = document.getElementById("roomList");
   if (!roomList) return;
 
@@ -677,7 +681,7 @@ function displayRooms() {
   roomList.innerHTML = html;
 }
 
-function getBookingDetailsHTML(booking) {
+function getBookingDetailsHTML(booking) { //returns html for a booked room
   return `
     <div class="booking-details">
       <div class="booking-header">
@@ -721,7 +725,7 @@ function filterRooms() {
   displayRooms();
 }
 
-function viewBooking(bookingId) {
+function viewBooking(bookingId) { //Finds the selected booking and shows a notification.
   const booking = bookingsData.find((b) => b.bookingId === bookingId);
   if (!booking) {
     showNotification("Booking not found", "error");
@@ -730,7 +734,7 @@ function viewBooking(bookingId) {
   showNotification(`Booking ${booking.bookingId} - ${booking.guestName}`, "info");
 }
 
-function bookRoom(roomNumber) {
+function bookRoom(roomNumber) { // book room button
   showNotification(`Booking Room ${roomNumber} - Redirecting...`, "info");
   setTimeout(() => {
     window.location.href = `add-new-reservation.html?room=${roomNumber}`;
@@ -741,9 +745,9 @@ function bookRoom(roomNumber) {
 // PAGE: CALCULATE-BILL.HTML (DB)
 // ========================================
 
-let currentBillData = null; // ✅ kept only once (duplicate removed)
+let currentBillData = null; // stores the currently loaded bill information.
 
-function initCalculateBill() { // ✅ kept only once (duplicate removed)
+function initCalculateBill() { //initialize the bill page by hiding the bill details section
   const emptyState = document.getElementById("emptyState");
   const billDetails = document.getElementById("billDetailsSection");
   if (emptyState) emptyState.style.display = "block";
@@ -751,7 +755,7 @@ function initCalculateBill() { // ✅ kept only once (duplicate removed)
 }
 
 async function fetchReservation() {
-  const reservationNo = document.getElementById("reservationNo")?.value.trim();
+  const reservationNo = document.getElementById("reservationNo")?.value.trim(); //gets reservation number
   if (!reservationNo) {
     showNotification("Please enter a reservation number", "error");
     return;
@@ -760,25 +764,25 @@ async function fetchReservation() {
   const base = getAppBasePath();
 
   try {
-    const res1 = await fetch(base + "/api/reservations/" + encodeURIComponent(reservationNo));
-    const reservation = await res1.json().catch(() => null);
+    const res1 = await fetch(base + "/api/reservations/" + encodeURIComponent(reservationNo)); //returns one reservation by no.
+    const reservation = await res1.json().catch(() => null); //->JSON
 
     if (!res1.ok || !reservation) {
       showNotification(reservation?.message || "Reservation not found", "error");
       return;
-    }
+    } //checks if reservation exists
 
-    const roomTypeKey = (reservation.roomType || "").toLowerCase();
+    const roomTypeKey = (reservation.roomType || "").toLowerCase(); //fetch room type details
     const res2 = await fetch(base + "/api/room-types/" + encodeURIComponent(roomTypeKey));
     const roomTypeDoc = await res2.json().catch(() => null);
 
     if (!res2.ok || !roomTypeDoc) {
       showNotification(roomTypeDoc?.message || "Room type not found for pricing", "error");
       return;
-    }
+    } //validate room type response
 
     const nights = calculateNights(reservation.checkinDate, reservation.checkoutDate);
-    if (nights <= 0) {
+    if (nights <= 0) { //cal nights
       showNotification("Invalid dates in reservation", "error");
       return;
     }
@@ -786,9 +790,9 @@ async function fetchReservation() {
     const pricePerDay = Number(roomTypeDoc.price || 0);
     const roomCharges = pricePerDay * nights;
     const tax = roomCharges * 0.18;
-    const total = roomCharges + tax;
+    const total = roomCharges + tax; //cal charges
 
-    currentBillData = {
+    currentBillData = { //stores
       reservationNo: reservation.reservationNo,
       guestName: reservation.guestName,
       guestPhone: reservation.phone,
@@ -840,7 +844,7 @@ function printBill() {
     <div class="print-bill">
       <div class="print-header">
         <h2>Ocean View Resort</h2>
-        <p>Beach Road, Galle  | Tel: 0555676749/p>
+        <p>Beach Road, Galle  | Tel: 0555676749</p>
         <p>GST: 27ABCDE1234F1Z5</p>
         <h3 style="margin-top: 20px; color: #2d3748;">TAX INVOICE</h3>
       </div>
@@ -889,7 +893,7 @@ function printBill() {
   if (printModal) printModal.style.display = "flex";
 }
 
-function confirmPrint() {
+function confirmPrint() { //sends the bill to the printer
   const printContent = document.getElementById("printPreview")?.innerHTML;
   if (!printContent) return;
 
@@ -917,31 +921,55 @@ function confirmPrint() {
   showNotification("Bill sent to printer", "success");
 }
 
-function closePrintModal() {
+function closePrintModal() { //hides preview
   const modal = document.getElementById("printModal");
   if (modal) modal.style.display = "none";
 }
 
-function saveBill() {
+async function checkoutReservation() {
   if (!currentBillData) {
-    showNotification("No bill to save", "error");
+    showNotification('No reservation loaded', 'error');
     return;
   }
 
-  const billData = {
-    invoiceNo: "INV-" + currentBillData.reservationNo,
-    date: new Date().toISOString(),
-    ...currentBillData,
-  };
+  const confirmed = confirm(
+    `Are you sure you want to checkout reservation ${currentBillData.reservationNo}?`
+  );
 
-  const savedBills = JSON.parse(localStorage.getItem("bills") || "[]");
-  savedBills.push(billData);
-  localStorage.setItem("bills", JSON.stringify(savedBills));
+  if (!confirmed) return;
 
-  showNotification("Bill saved successfully", "success");
+  try {
+    const base = getAppBasePath();
+
+    const params = new URLSearchParams();
+    params.append("reservationNo", currentBillData.reservationNo);
+
+    const res = await fetch(base + "/api/reservations/delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params.toString()
+    }); //call delete api
+
+    const data = await res.json().catch(() => ({
+      success: false,
+      message: "Bad server response"
+    }));
+
+    if (!res.ok || !data.success) {
+      showNotification(data.message || "Checkout failed", "error");
+      return;
+    }
+
+    showNotification("Checkout completed successfully", "success");
+    resetBill();
+
+  } catch (err) {
+    console.error(err);
+    showNotification("Server not reachable", "error");
+  }
 }
 
-function resetBill() {
+function resetBill() { //resets bill page
   const resNo = document.getElementById("reservationNo");
   const emptyState = document.getElementById("emptyState");
   const billDetails = document.getElementById("billDetailsSection");
@@ -959,7 +987,7 @@ function resetBill() {
 // ========================================
 
 let roomTypes = [];
-let currentType = null;
+let currentType = null; //stores room type data from db
 
 async function initManageRooms() {
   await loadRoomTypes();
@@ -967,18 +995,18 @@ async function initManageRooms() {
   updateSummaryCards();
 }
 
-async function loadRoomTypes() {
+async function loadRoomTypes() { //fetches all room types
   const base = getAppBasePath();
   const res = await fetch(base + "/api/room-types");
   if (!res.ok) throw new Error("Failed to load room types");
   roomTypes = await res.json();
 }
 
-function renderRoomTypesTable() {
+function renderRoomTypesTable() { //table format
   const tbody = document.getElementById("roomsTableBody");
   if (!tbody) return;
 
-  if (!roomTypes.length) {
+  if (!roomTypes.length) { //handles empty data
     tbody.innerHTML = "";
     document.getElementById("emptyState").style.display = "block";
     return;
@@ -1020,7 +1048,7 @@ function renderRoomTypesTable() {
     .join("");
 }
 
-function updateSummaryCards() {
+function updateSummaryCards() { //calculates the summary values
   const totalTypes = roomTypes.length;
   const totalRooms = roomTypes.reduce((sum, rt) => sum + (rt.rooms ? rt.rooms.length : 0), 0);
   const avgPrice = totalTypes ? Math.round(roomTypes.reduce((s, rt) => s + Number(rt.price || 0), 0) / totalTypes) : 0;
@@ -1031,7 +1059,7 @@ function updateSummaryCards() {
   setElementText("avgPrice", "Rs." + avgPrice.toLocaleString());
 }
 
-function openEditTypeModal(type) {
+function openEditTypeModal(type) { //edit modal
   const rt = roomTypes.find((x) => x.type === type);
   if (!rt) return;
 
@@ -1108,7 +1136,7 @@ async function saveRoom() {
   updateSummaryCards();
 }
 
-async function promptAddRoom(type) {
+async function promptAddRoom(type) { //adds room no. to a room type
   const roomNumber = prompt(`Add room number to ${type} (e.g., 206):`);
   if (!roomNumber) return;
 
@@ -1136,7 +1164,7 @@ async function promptAddRoom(type) {
   updateSummaryCards();
 }
 
-async function promptRemoveRoom(type) {
+async function promptRemoveRoom(type) { //removes a room
   const roomNumber = prompt(`Remove room number from ${type} (e.g., 205):`);
   if (!roomNumber) return;
 
@@ -1164,7 +1192,7 @@ async function promptRemoveRoom(type) {
   updateSummaryCards();
 }
 
-function closeModal() {
+function closeModal() { //closes the edit model
   document.getElementById("roomModal").style.display = "none";
   currentType = null;
 }
@@ -1174,8 +1202,8 @@ function closeModal() {
 // ========================================
 
 function initViewReports() {
-  const today = new Date();
-  const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+  const today = new Date(); //current date
+  const firstDay = new Date(today.getFullYear(), today.getMonth(), 1); //cal first day of current month
 
   const startDate = document.getElementById("startDate");
   const endDate = document.getElementById("endDate");
@@ -1186,7 +1214,7 @@ function initViewReports() {
   showNotification("Reports loaded successfully", "success");
 }
 
-function applyDateFilter() {
+function applyDateFilter() { //date filter - range
   const startDate = document.getElementById("startDate")?.value;
   const endDate = document.getElementById("endDate")?.value;
 
@@ -1203,7 +1231,7 @@ function applyDateFilter() {
   showNotification(`Loading reports from ${formatDate(startDate)} to ${formatDate(endDate)}`, "info");
 }
 
-function setDateRange(range) {
+function setDateRange(range) { //date range
   const today = new Date();
   let startDate = new Date();
 
@@ -1234,7 +1262,7 @@ function setDateRange(range) {
   applyDateFilter();
 }
 
-function exportReports() {
+function exportReports() { //export report as pdf
   showNotification("Exporting reports as PDF...", "info");
   setTimeout(() => {
     showNotification("Reports exported successfully", "success");
@@ -1246,10 +1274,10 @@ function printReports() {
 }
 
 // ========================================
-// PAGE: MODIFY-RESERVATIONS.HTML (DB - VIEW + DELETE ONLY)
+// PAGE: MODIFY-RESERVATIONS.HTML
 // ========================================
 
-let allReservations_Manager = [];
+let allReservations_Manager = []; //stores all reservations loaded from the backend
 let filteredReservations_Manager = [];
 
 async function initModifyReservations() {
@@ -1264,7 +1292,7 @@ async function initModifyReservations() {
   }
 }
 
-async function loadReservationsForManager() {
+async function loadReservationsForManager() { //gets all reservation records
   const base = getAppBasePath();
   const res = await fetch(base + "/api/reservations");
   if (!res.ok) throw new Error("Failed to fetch reservations: " + res.status);
@@ -1292,7 +1320,7 @@ async function loadReservationsForManager() {
   allReservations_Manager.sort((a, b) => (b.reservationNo || "").localeCompare(a.reservationNo || ""));
 }
 
-function searchReservations() {
+function searchReservations() { //filters
   const term = document.getElementById("searchInput")?.value.trim().toLowerCase() || "";
 
   if (!term) {
@@ -1311,7 +1339,7 @@ function searchReservations() {
   updateReservationSummary();
 }
 
-function renderReservationsTable() {
+function renderReservationsTable() { //displays filtered reservations
   const tbody = document.getElementById("reservationsTableBody");
   const emptyState = document.getElementById("emptyState");
   if (!tbody) return;
@@ -1354,7 +1382,7 @@ function renderReservationsTable() {
   tbody.innerHTML = html;
 }
 
-async function deleteReservation(reservationNo) {
+async function deleteReservation(reservationNo) { //deletes reservation from db
   if (!confirm(`Delete reservation ${reservationNo}? This cannot be undone.`)) return;
 
   try {
@@ -1388,7 +1416,7 @@ async function deleteReservation(reservationNo) {
   }
 }
 
-function updateReservationSummary() {
+function updateReservationSummary() { //updates the summary card
   const total = filteredReservations_Manager.length;
 
   const totalEl = document.getElementById("totalCount");
@@ -1411,10 +1439,10 @@ function updateReservationSummary() {
 // PAGE: ADD-NEW-RESERVATION.HTML (DB + BOOKED CHECK)
 // ========================================
 
-let roomTypesMap = {};
+let roomTypesMap = {}; //stores room type data
 let reservationsCache = [];
 
-async function loadRoomTypesFromDB() {
+async function loadRoomTypesFromDB() { //loads room types from backend
   const base = getAppBasePath();
 
   const res = await fetch(base + "/api/room-types");
@@ -1442,7 +1470,7 @@ async function loadRoomTypesFromDB() {
   });
 }
 
-async function loadReservationsFromDB() {
+async function loadReservationsFromDB() { //loads all reservation info
   const base = getAppBasePath();
 
   const res = await fetch(base + "/api/reservations");
@@ -1450,13 +1478,13 @@ async function loadReservationsFromDB() {
   reservationsCache = await res.json();
 }
 
-// ---- Date overlap helpers ----
+//Date overlap helpers
 function parseYMD(dateStr) {
   const [y, m, d] = String(dateStr).split("-").map(Number);
   return new Date(y, m - 1, d);
 }
 
-function rangesOverlap(checkinA, checkoutA, checkinB, checkoutB) {
+function rangesOverlap(checkinA, checkoutA, checkinB, checkoutB) { //checks two booking date ranges overlaps
   const aStart = parseYMD(checkinA);
   const aEnd = parseYMD(checkoutA);
   const bStart = parseYMD(checkinB);
@@ -1465,7 +1493,7 @@ function rangesOverlap(checkinA, checkoutA, checkinB, checkoutB) {
   return aStart < bEnd && bStart < aEnd;
 }
 
-function isRoomBookedForDates(roomNumber, checkinDate, checkoutDate) {
+function isRoomBookedForDates(roomNumber, checkinDate, checkoutDate) { //checks if room is already booked for the selected dates
   if (!checkinDate || !checkoutDate) return false;
 
   return reservationsCache.some((r) => {
@@ -1480,7 +1508,7 @@ function isRoomBookedForDates(roomNumber, checkinDate, checkoutDate) {
   });
 }
 
-// ---- Update room numbers dropdown with availability ----
+//Update room numbers dropdown with availability
 function updateRoomNumbersFromDB() {
   const roomType = document.getElementById("roomType")?.value;
   const roomNumberSelect = document.getElementById("roomNumber");
@@ -1566,14 +1594,13 @@ function updateRoomNumbersFromDB() {
   }
 }
 
-// ---- Price helpers ----
-function getRoomPriceFromDB(roomType) {
+function getRoomPriceFromDB(roomType) { //returns the room price
   const rt = roomTypesMap[roomType];
   if (!rt) return getRoomPrice(roomType);
   return Number(rt.price || 0);
 }
 
-function calculatePriceFromDB() {
+function calculatePriceFromDB() { //updates the booking summary
   const roomType = document.getElementById("roomType")?.value;
   const checkinDate = document.getElementById("checkinDate")?.value;
   const checkoutDate = document.getElementById("checkoutDate")?.value;
@@ -1610,15 +1637,14 @@ function calculatePriceFromDB() {
   if (priceSummary) priceSummary.style.display = "block";
 }
 
-// ---- Reservation number + date min ----
-function generateReservationNo() {
+function generateReservationNo() { //generates a unique reservation no.
   const prefix = "RES";
   const timestamp = Date.now().toString().slice(-6);
   const random = Math.floor(Math.random() * 1000).toString().padStart(3, "0");
   return `${prefix}${timestamp}${random}`;
 }
 
-function setMinDates() {
+function setMinDates() { //restricts invalid date selection
   const today = new Date().toISOString().split("T")[0];
   const checkinInput = document.getElementById("checkinDate");
   const checkoutInput = document.getElementById("checkoutDate");

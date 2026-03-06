@@ -1,4 +1,4 @@
-package com.hotel.servlet;
+package com.hotel.servlet; //handles HTTP requests to delete hotel reservations from the system
 
 import com.hotel.repo.ReservationRepository;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,10 +11,10 @@ import java.io.IOException;
 @WebServlet("/api/reservations/delete")
 public class DeleteReservationServlet extends HttpServlet {
 
-    private final ReservationRepository repo = new ReservationRepository();
+    private final ReservationRepository repo = new ReservationRepository(); //Creates a connection to the reservation repository to perform database operations
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException { //handles POST requests to delete a reservation
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
